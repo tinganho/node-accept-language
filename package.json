@@ -1,0 +1,31 @@
+{
+  "name": "accept-language",
+  "version": "1.0.1",
+  "description": "Parse the HTTP Accept-Language header",
+  "main": "index.js",
+  "scripts": {
+    "test": "grunt test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/tinganho/accept-language.git"
+  },
+  "keywords": [
+    "accept-language",
+    "i18n",
+    "parser"
+  ],
+  "author": "Tingan Ho <tingan87@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tinganho/accept-language/issues"
+  },
+  "homepage": "https://github.com/tinganho/accept-language",
+  "devDependencies": {
+    "grunt": "^0.4.4",
+    "grunt-cli": "^0.1.13",
+    "grunt-contrib-jshint": "^0.9.2",
+    "mocha": "~1.18.2",
+    "chai": "~1.9.1"
+  }
+}
