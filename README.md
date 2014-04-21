@@ -68,5 +68,30 @@ Output:
 ];
 ```
 
+Use default value:
+
+```
+var acceptLanguage = require('accept-language');
+acceptLanguage.default({
+    code : 'en',
+    region : 'US'
+    // No need to specify quality
+});
+acceptLanguage.codes(['en', 'zh']);
+var language = acceptLanguage.parse('fr-CA');
+
+console.log(language);
+```
+
+Output:
+```
+[
+  {
+    code: "en",
+    region: "US",
+    quality: 1.0
+  }
+];
+
 
 The output is always sorted with the highest quality first.

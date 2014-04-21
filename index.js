@@ -5,34 +5,40 @@
 
 var acceptLanguageSyntax = /((([a-zA-Z]+(-[a-zA-Z]+)?)|\*)(;q=[0-1](\.[0-9]+)?)?)*/g
   , isCode = /^[a-z]{2}$/
-  , isRegion = /^[a-z]{2}$/i
-  , exports = module.exports;
+  , isRegion = /^[a-z]{2}$/i;
+
+/**
+ * Prototype
+ */
+
+var acceptLanguage = exports = module.exports = {};
 
 /**
  * Languague codes
  */
 
-var codes = exports.codes = [];
+acceptLanguage._codes = [];
 
 /**
  * Default code
  */
 
-var defaultLanguage = exports.defaultLanguage = null;
+acceptLanguage.defaultLanguage  = {};
 
 /**
- * Prune locales that aren't defined
+ * Prune languages that aren't defined
  *
- * @param {Array.<locale>} locales
- * @return {Array.<locale>}
+ * @param {Array.<language>} languages
+ * @return {Array.<language>}
  * @api public
  */
 
-function prune(locales) {
-  if(codes.length > 0) {
-    locales = locales.filter(function(locale) {
+function prune(languages) {
+  var _this = this;
+  if(acceptLanguage._codes.length > 0) {
+    languages = languages.filter(function(language) {
       var filter = false;
-      if(codes.indexOf(locale.code) === -1) {
+      if(acceptLanguage._codes.indexOf(language.code) === -1) {
         return false;
       }
 
@@ -40,38 +46,40 @@ function prune(locales) {
     });
   }
 
-  // If no locales matches the defined set. Return
-  // the default locale if it is set
-  if(locales.length === 0 && defaultLanguage) {
-    return defaultLanguage;
+  // If no codes matches the defined set. Return
+  // the default language if it is set
+  if(languages.length === 0 && acceptLanguage.defaultLanguage) {
+    return acceptLanguage.defaultLanguage;
   }
 
-  return locales;
+  return languages;
 };
 
 /**
- * Define locales
+ * Define codes
  *
- * @param {Array.<locale>} locales
+ * @param {Array.<code>} codes
  * @return {void}
  * @api public
  */
 
-exports.codes = function(locales) {
-  locales.forEach(function(locale) {
-    if(typeof locale !== 'string') {
+exports.codes = function(codes) {
+  var _this = this;
+
+  codes.forEach(function(code) {
+    if(typeof code !== 'string') {
       throw new TypeError('First parameter must be an array of strings');
     }
-    if(!isCode.test(locale)) {
-      throw new TypeError('First parameter must be an array consisting of languague codes. Wrong syntax if locale: ' + locale);
+    if(!isCode.test(code)) {
+      throw new TypeError('First parameter must be an array consisting of languague codes. Wrong syntax if code: ' + code);
     }
     // Store code
-    codes.push(locale);
+    _this._codes.push(code);
   });
 };
 
 /**
- * Default locale if no-match occurs
+ * Default language if no-match occurs
  *
  * @param {String} language
  * @returns {void}
@@ -93,19 +101,23 @@ exports.default = function(language) {
     throw new TypeError('Property region must consist of two case-insensitive letters [a-zA-Z]');
   }
 
-  defaultLanguage = language;
+  // Set language quality to 1.0
+  language.quality = 1.0;
+
+  this.defaultLanguage = language;
 };
 
 /**
- * Define locales
+ * Parse accept language string
  *
- * @return {void}
+ * @param {String} acceptLanguage
+ * @return {Array.<language>}
  * @api public
  */
 
 exports.parse = function(acceptLanguage) {
   var strings = (acceptLanguage || '').match(acceptLanguageSyntax);
-  var locales = strings.map(function(match) {
+  var languages = strings.map(function(match) {
     if(!match){
       return;
     }
@@ -118,12 +130,14 @@ exports.parse = function(acceptLanguage) {
       region: ietf[1],
       quality: bits[1] ? parseFloat(bits[1].split('=')[1]) : 1.0
     };
-  }).filter(function(r){
-    return r;
-  }).sort(function(a, b){
+  })
+  .filter(function(language) {
+    return language;
+  })
+  .sort(function(a, b) {
     return b.quality - a.quality;
   });
 
-  return prune(locales);
+  return prune(languages);
 };
 
