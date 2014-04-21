@@ -3,7 +3,7 @@ accept-language [![Build Status](https://travis-ci.org/tinganho/accept-language.
 
 [![NPM](https://nodei.co/npm/accept-language.png?downloads=true&stars=true)](https://nodei.co/npm/accept-language/)
 
-´accept-language´ is an Node package that parses HTTP Accept-Language header and returns a consumable array of language codes.
+`accept-language` is an Node package that parses HTTP Accept-Language header and returns a consumable array of language codes.
 
 ### Installation:
 
