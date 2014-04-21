@@ -1,6 +1,4 @@
 
-
-
 /**
  * Modules
  */
@@ -18,10 +16,9 @@ global.expect = require('chai').expect;
 
 chai.use(sinonChai);
 
-
 describe('accept-language', function() {
   describe('#parse', function() {
-    it('should be able to parse a single langague', function() {
+    it('should be able to parse a single language', function() {
       expect(acceptLangague.parse('en')).to.eql([{
         code : 'en',
         region : undefined,
@@ -29,7 +26,7 @@ describe('accept-language', function() {
       }]);
     });
 
-    it('should be able to parse multiple langagues without regions', function() {
+    it('should be able to parse multiple languages without regions', function() {
       expect(acceptLangague.parse('en,zh')).to.eql([{
         code : 'en',
         region : undefined,
@@ -167,6 +164,84 @@ describe('accept-language', function() {
         region : 'US',
         quality : 0.8
       }]);
+    });
+  });
+
+  describe('#default', function() {
+    it('should throw an error if the first parameeter is not an object', function() {
+      var sample = function() {
+        acceptLangague.default(1);
+      };
+      expect(sample).to.throw(TypeError, 'First parameter must be an object');
+    });
+
+    it('should throw an error if language object don\'t contain a code property', function() {
+      var language = {
+        region : 'US',
+        quality : 1
+      };
+      var sample = function() {
+        acceptLangague.default(language);
+      };
+      expect(sample).to.throw(TypeError, 'Property code must be a string and can\'t be undefined');
+    });
+
+    it('should throw an error if language object contain a code property but with wrong type', function() {
+      var language = {
+        code : 1,
+        region : 'US',
+        quality : 1
+      };
+      var sample = function() {
+        acceptLangague.default(language);
+      };
+      expect(sample).to.throw(TypeError, 'Property code must be a string and can\'t be undefined');
+    });
+
+    it('should throw an error if language object contain a code property but with wrong syntax', function() {
+      var language = {
+        code : 'US',
+        region : 'US',
+        quality : 1
+      };
+      var sample = function() {
+        acceptLangague.default(language);
+      };
+      expect(sample).to.throw(TypeError, 'Property code must consist of two lowercase letters [a-z]');
+    });
+
+    it('should throw an error if language object contain a region property with wrong syntax', function() {
+      var language = {
+        code : 'en',
+        region : 'USS',
+        quality : 1
+      };
+      var sample = function() {
+        acceptLangague.default(language);
+      };
+      expect(sample).to.throw(TypeError, 'Property region must consist of two case-insensitive letters [a-zA-Z]');
+    });
+
+    it('should return the default language if there is no match', function() {
+      var language = {
+        code : 'en',
+        region : 'US',
+        quality : 1
+      };
+      acceptLangague.default(language);
+      acceptLangague.codes(['en', 'zh']);
+      expect(acceptLangague.parse('fr-CA')).to.eql(language);
+    });
+
+    it('shouldn\'t return the default language if there is a match', function() {
+      var language = {
+        code : 'en',
+        region : 'US',
+        quality : 1
+      };
+      acceptLangague.default(language);
+      acceptLangague.codes(['en', 'zh']);
+      expect(acceptLangague.parse('zh-CN')).to.not.eql(language);
     });
   });
 });

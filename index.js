@@ -4,7 +4,8 @@
  */
 
 var acceptLanguageSyntax = /((([a-zA-Z]+(-[a-zA-Z]+)?)|\*)(;q=[0-1](\.[0-9]+)?)?)*/g
-  , localeSyntax = /^[a-z]{2}$/
+  , isCode = /^[a-z]{2}$/
+  , isRegion = /^[a-z]{2}$/i
   , exports = module.exports;
 
 /**
@@ -12,6 +13,12 @@ var acceptLanguageSyntax = /((([a-zA-Z]+(-[a-zA-Z]+)?)|\*)(;q=[0-1](\.[0-9]+)?)?
  */
 
 var codes = exports.codes = [];
+
+/**
+ * Default code
+ */
+
+var defaultLanguage = exports.defaultLanguage = null;
 
 /**
  * Prune locales that aren't defined
@@ -33,6 +40,12 @@ function prune(locales) {
     });
   }
 
+  // If no locales matches the defined set. Return
+  // the default locale if it is set
+  if(locales.length === 0 && defaultLanguage) {
+    return defaultLanguage;
+  }
+
   return locales;
 };
 
@@ -49,12 +62,38 @@ exports.codes = function(locales) {
     if(typeof locale !== 'string') {
       throw new TypeError('First parameter must be an array of strings');
     }
-    if(!localeSyntax.test(locale)) {
+    if(!isCode.test(locale)) {
       throw new TypeError('First parameter must be an array consisting of languague codes. Wrong syntax if locale: ' + locale);
     }
     // Store code
     codes.push(locale);
   });
+};
+
+/**
+ * Default locale if no-match occurs
+ *
+ * @param {String} language
+ * @returns {void}
+ * @throws {TypeError}
+ * @api public
+ */
+
+exports.default = function(language) {
+  if(typeof language !== 'object') {
+    throw new TypeError('First parameter must be an object');
+  }
+  if(typeof language.code !== 'string') {
+    throw new TypeError('Property code must be a string and can\'t be undefined');
+  }
+  if(!isCode.test(language.code)) {
+    throw new TypeError('Property code must consist of two lowercase letters [a-z]');
+  }
+  if(typeof language.region === 'string' && !isRegion.test(language.region)) {
+    throw new TypeError('Property region must consist of two case-insensitive letters [a-zA-Z]');
+  }
+
+  defaultLanguage = language;
 };
 
 /**
@@ -64,7 +103,7 @@ exports.codes = function(locales) {
  * @api public
  */
 
-exports.parse = function(acceptLanguage){
+exports.parse = function(acceptLanguage) {
   var strings = (acceptLanguage || '').match(acceptLanguageSyntax);
   var locales = strings.map(function(match) {
     if(!match){
