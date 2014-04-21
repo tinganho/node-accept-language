@@ -16,7 +16,7 @@ var codes = exports.codes = [];
 /**
  * Prune locales that aren't defined
  *
- * @param {Array.<locale>}
+ * @param {Array.<locale>} locales
  * @return {Array.<locale>}
  * @api public
  */
@@ -39,7 +39,7 @@ function prune(locales) {
 /**
  * Define locales
  *
- * @param {Array.<locale>}
+ * @param {Array.<locale>} locales
  * @return {void}
  * @api public
  */
