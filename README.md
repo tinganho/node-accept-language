@@ -1,7 +1,7 @@
-accept-language[![Build Status](https://travis-ci.org/tinganho/connect-modrewrite.png)](https://travis-ci.org/tinganho/connect-modrewrite)
+accept-language [![Build Status](https://travis-ci.org/tinganho/accept-language.png)](https://travis-ci.org/tinganho/accept-language)
 ========================
 
-[![NPM](https://nodei.co/npm/connect-modrewrite.png?downloads=true&stars=true)](https://nodei.co/npm/connect-modrewrite/)
+[![NPM](https://nodei.co/npm/accept-language.png?downloads=true&stars=true)](https://nodei.co/npm/accept-language/)
 
 ´accept-language´ parses HTTP Accept-Langague header and returns a consumable array of langauge codes.
 
