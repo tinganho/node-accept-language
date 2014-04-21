@@ -8,7 +8,7 @@ dependencies: none
 installation:
 
 ```
-npm install accept-language
+npm install accept-language --save
 ```
 
 usage:
