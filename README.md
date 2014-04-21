@@ -1,4 +1,4 @@
-accept-language [![Build Status](https://travis-ci.org/tinganho/accept-language.png)](https://travis-ci.org/tinganho/accept-language)
+accept-language [![Build Status](https://travis-ci.org/tinganho/node-accept-language.png)](https://travis-ci.org/tinganho/node-accept-language)
 ========================
 
 [![NPM](https://nodei.co/npm/accept-language.png?downloads=true&stars=true)](https://nodei.co/npm/accept-language/)
