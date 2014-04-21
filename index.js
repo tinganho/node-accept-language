@@ -88,10 +88,10 @@ exports.codes = function(codes) {
  */
 
 exports.default = function(language) {
-  if(typeof language !== 'object') {
+  if(typeof language !== 'object') {
     throw new TypeError('First parameter must be an object');
   }
-  if(typeof language.code !== 'string') {
+  if(typeof language.code !== 'string') {
     throw new TypeError('Property code must be a string and can\'t be undefined');
   }
   if(!isCode.test(language.code)) {
