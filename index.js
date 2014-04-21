@@ -60,6 +60,7 @@ function prune(languages) {
  *
  * @param {Array.<code>} codes
  * @return {void}
+ * @throws {TypeError}
  * @api public
  */
 
