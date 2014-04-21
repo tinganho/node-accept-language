@@ -3,11 +3,15 @@
  * Private variables
  */
 
-var codes = []
-  , regions = []
-  , acceptLanguagueSyntax = /((([a-zA-Z]+(-[a-zA-Z]+)?)|\*)(;q=[0-1](\.[0-9]+)?)?)*/g
+var acceptLanguageSyntax = /((([a-zA-Z]+(-[a-zA-Z]+)?)|\*)(;q=[0-1](\.[0-9]+)?)?)*/g
   , localeSyntax = /^[a-z]{2}$/
   , exports = module.exports;
+
+/**
+ * Languague codes
+ */
+
+var codes = exports.codes = [];
 
 /**
  * Prune locales that aren't defined
@@ -16,17 +20,19 @@ var codes = []
  * @api public
  */
 
-function prune() {
-  this.filter(function(locale) {
-    var filter = false;
-    if(codes.indexOf(locale.code) === -1) {
-      return false;
-    }
+function prune(locales) {
+  if(codes.length > 0) {
+    locales = locales.filter(function(locale) {
+      var filter = false;
+      if(codes.indexOf(locale.code) === -1) {
+        return false;
+      }
 
-    return true;
-  });
+      return true;
+    });
+  }
 
-  return this;
+  return locales;
 };
 
 /**
@@ -36,16 +42,16 @@ function prune() {
  * @api public
  */
 
-exports.define = function(locales) {
+exports.codes = function(locales) {
   locales.forEach(function(locale) {
-    if(typeof locale.code !== 'string') {
-      throw new TypeError('Locale `code` should be a string');
+    if(typeof locale !== 'string') {
+      throw new TypeError('First parameter must be an array of strings');
     }
-    if(localeSyntax.test(locale.code)) {
-      throw new TypeError('Locale `code` is wrong in ' + JSON.stringify(locale));
+    if(!localeSyntax.test(locale)) {
+      throw new TypeError('First parameter must be an array consisting of languague codes. Wrong syntax if locale: ' + locale);
     }
     // Store code
-    codes.push(locale.code);
+    codes.push(locale);
   });
 };
 
@@ -77,8 +83,6 @@ exports.parse = function(acceptLanguage){
     return b.quality - a.quality;
   });
 
-  locale.prune = prune;
-
-  return locales;
+  return prune(locales);
 };
 
