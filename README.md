@@ -1,27 +1,26 @@
-accept-language
-======================
+accept-language[![Build Status](https://travis-ci.org/tinganho/connect-modrewrite.png)](https://travis-ci.org/tinganho/connect-modrewrite)
+========================
 
-Parses the accept-language header from an HTTP request and produces an array of language objects sorted by quality.
+[![NPM](https://nodei.co/npm/connect-modrewrite.png?downloads=true&stars=true)](https://nodei.co/npm/connect-modrewrite/)
 
-dependencies: none
+´accept-language´ parses HTTP Accept-Langague header and returns a consumable array of langauge codes.
 
-installation:
+### Installation:
 
 ```
 npm install accept-language --save
 ```
 
-usage:
+### Usage:
 
 ```
 var acceptLanguage = require('accept-language');
-acceptLanguage.codes(['en', 'zh']);
 var language = acceptLanguage.parse('en-GB,en;q=0.8,sv');
 
 console.log(language);
 ```
 
-Output will be:
+Output:
 
 ```
 [
@@ -43,17 +42,17 @@ Output will be:
 ];
 ```
 
-Pruning non-defined langnague codes:
+Filter non-defined language codes:
 
 ```
 var acceptLanguage = require('accept-language');
 acceptLanguage.codes(['en', 'zh']);
-var language = acceptLanguage.parse('en-GB,en;q=0.8,sv').prune();
+var language = acceptLanguage.parse('en-GB,en;q=0.8,sv');
 
 console.log(language);
 ```
 
-Output will be:
+Output:
 ```
 [
   {
@@ -70,4 +69,4 @@ Output will be:
 ```
 
 
-Output is always sorted in quality order from highest -> lowest. as per the http spec, omitting the quality value implies 1.0.
+The output is always sorted with the highest quality first.
