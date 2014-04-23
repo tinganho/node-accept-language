@@ -1,0 +1,5 @@
+test
+bin
+.travis.yml
+Gruntfile.js
+.gitignore
