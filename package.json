@@ -1,7 +1,7 @@
 {
   "name": "accept-language",
   "version": "1.0.7",
-  "description": "HTTP Accept-Language parse for node",
+  "description": "HTTP Accept-Language parser for node",
   "main": "index.js",
   "scripts": {
     "test": "./bin/test"
