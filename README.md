@@ -92,6 +92,7 @@ Output:
     quality: 1.0
   }
 ];
+```
 
 
 The output is always sorted with the highest quality first.
