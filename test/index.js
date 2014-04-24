@@ -150,7 +150,7 @@ describe('acceptLanguage', function() {
         }]);
     });
 
-    it('should return empty array if the provided argument to `parse()` is not string', function() {
+    it('should return empty array if the provided argument to `parse()` is not a string', function() {
         expect(acceptLanguage.parse(1)).to.eql([]);
     });
   });
