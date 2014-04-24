@@ -23,7 +23,7 @@ acceptLanguage._codes = [];
  * Default code
  */
 
-acceptLanguage.defaultLanguage  = {};
+acceptLanguage.defaultLanguage  = null;
 
 /**
  * Prune languages that aren't defined
@@ -49,7 +49,7 @@ function prune(languages) {
   // If no codes matches the defined set. Return
   // the default language if it is set
   if(languages.length === 0 && acceptLanguage.defaultLanguage) {
-    return acceptLanguage.defaultLanguage;
+    return [acceptLanguage.defaultLanguage];
   }
 
   return languages;
@@ -117,6 +117,9 @@ exports.default = function(language) {
  */
 
 exports.parse = function(acceptLanguage) {
+  if(typeof acceptLanguage !== 'string') {
+    return this.defaultLanguage ? [this.defaultLanguage] : [];
+  }
   var strings = (acceptLanguage || '').match(acceptLanguageSyntax);
   var languages = strings.map(function(match) {
     if(!match){

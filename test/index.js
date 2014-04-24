@@ -149,6 +149,10 @@ describe('acceptLanguage', function() {
           quality : 0.1
         }]);
     });
+
+    it('should return empty array if the provided argument to `parse()` is not string', function() {
+        expect(acceptLanguage.parse(1)).to.eql([]);
+    });
   });
 
   describe('#codes', function() {
@@ -236,7 +240,27 @@ describe('acceptLanguage', function() {
       };
       acceptLanguage.default(language);
       acceptLanguage.codes(['en', 'zh']);
-      expect(acceptLanguage.parse('fr-CA')).to.eql(language);
+      expect(acceptLanguage.parse('fr-CA')).to.eql([language]);
+    });
+
+    it('should return the default language if the provided argument to `parse()` is not a string', function() {
+      var language = {
+        code : 'en',
+        region : 'US',
+        quality : 1
+      };
+      acceptLanguage.default(language);
+      expect(acceptLanguage.parse(1)).to.eql([language]);
+    });
+
+    it('should return the default language if the provided argument to `parse()` is an empty string', function() {
+      var language = {
+        code : 'en',
+        region : 'US',
+        quality : 1
+      };
+      acceptLanguage.default(language);
+      expect(acceptLanguage.parse('')).to.eql([language]);
     });
 
     it('shouldn\'t return the default language if there is a match', function() {
@@ -247,7 +271,7 @@ describe('acceptLanguage', function() {
       };
       acceptLanguage.default(language);
       acceptLanguage.codes(['en', 'zh']);
-      expect(acceptLanguage.parse('zh-CN')).to.not.eql(language);
+      expect(acceptLanguage.parse('zh-CN')).to.not.eql([language]);
     });
   });
 });
