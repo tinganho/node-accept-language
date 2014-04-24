@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/tinganho/accept-language.git"
+    "url": "git://github.com/tinganho/node-accept-language.git"
   },
   "keywords": [
     "accept-language",
@@ -18,9 +18,9 @@
   "author": "Tingan Ho <tingan87@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/tinganho/accept-language/issues"
+    "url": "https://github.com/tinganho/node-accept-language/issues"
   },
-  "homepage": "https://github.com/tinganho/accept-language",
+  "homepage": "https://github.com/tinganho/node-accept-language",
   "devDependencies": {
     "sinon": "~1.9.1",
     "sinon-chai": "~2.5.0",
