@@ -4,7 +4,7 @@
   "description": "HTTP Accept-Language parser for node",
   "main": "index.js",
   "scripts": {
-    "test": "./bin/test"
+    "test": "./binaries/test"
   },
   "repository": {
     "type": "git",

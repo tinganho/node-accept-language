@@ -4,8 +4,17 @@
  */
 
 var acceptLanguageSyntax = /((([a-zA-Z]+(-[a-zA-Z]+)?)|\*)(;q=[0-1](\.[0-9]+)?)?)*/g
-  , isCode = /^[a-z]{2}$/
-  , isRegion = /^[a-z]{2}$/i;
+  , isLocale = /^[a-z]{2}\-[A-Z]{2}$/
+  , isLanguage = /^[a-z]{2}$/
+  , isRegion = /^[A-Z]{2}$/;
+
+Object.size = function(obj) {
+    var size = 0, key;
+    for (key in obj) {
+        if (obj.hasOwnProperty(key)) size++;
+    }
+    return size;
+};
 
 /**
  * Prototype
@@ -17,42 +26,57 @@ var acceptLanguage = exports = module.exports = {};
  * Languague codes
  */
 
-acceptLanguage._codes = [];
+acceptLanguage._locales = {};
 
 /**
  * Default code
  */
 
-acceptLanguage.defaultLanguage  = null;
+acceptLanguage.defaultLocale = null;
 
 /**
- * Prune languages that aren't defined
+ * Prune locales that aren't defined
  *
- * @param {Array.<language>} languages
- * @return {Array.<language>}
+ * @param {Array.<locale>} locales
+ * @return {Array.<locale>}
  * @api public
  */
 
-function prune(languages) {
+function prune(locales) {
   var _this = this;
-  if(acceptLanguage._codes.length > 0) {
-    languages = languages.filter(function(language) {
-      var filter = false;
-      if(acceptLanguage._codes.indexOf(language.code) === -1) {
+
+  if(Object.size(acceptLanguage._locales) > 0) {
+    locales = locales
+
+    .filter(function(locale) {
+      if(typeof acceptLanguage._locales[locale.language] === 'undefined') {
         return false;
       }
-
       return true;
+    })
+
+    .map(function(locale) {
+      if(typeof locale.region === 'string' && isRegion.test(locale.region)) {
+        // Set the first defined region if there is no match region
+        if(acceptLanguage._locales[locale.language].regions.indexOf(locale.region) === -1) {
+          locale.region = acceptLanguage._locales[locale.language].regions[0];
+        }
+      }
+      else {
+        locale.region = acceptLanguage._locales[locale.language].regions[0];
+      }
+      locale.value = locale.language + '-' + locale.region;
+      return locale;
     });
   }
 
   // If no codes matches the defined set. Return
   // the default language if it is set
-  if(languages.length === 0 && acceptLanguage.defaultLanguage) {
-    return [acceptLanguage.defaultLanguage];
+  if(locales.length === 0 && acceptLanguage.defaultLocale) {
+    return [acceptLanguage.defaultLocale];
   }
 
-  return languages;
+  return locales;
 };
 
 /**
@@ -64,48 +88,98 @@ function prune(languages) {
  * @api public
  */
 
-exports.codes = function(codes) {
+exports.locales = function(locales) {
   var _this = this;
 
-  codes.forEach(function(code) {
-    if(typeof code !== 'string') {
-      throw new TypeError('First parameter must be an array of strings');
+  // Reset locales
+  this._locales = {};
+
+  locales.forEach(function(locale) {
+    if(typeof locale === 'string') {
+      if(isLocale.test(locale)) {
+        locale = {
+          value : locale,
+          region : locale.substr(3, 2),
+          language : locale.substr(0, 2)
+        };
+      }
+      else {
+        throw new TypeError('First parameter is not a locale string e.g. en-US.');
+      }
     }
-    if(!isCode.test(code)) {
-      throw new TypeError('First parameter must be an array consisting of languague codes. Wrong syntax if code: ' + code);
+    else {
+      if(typeof locale.language !== 'string') {
+        throw new TypeError('Language codes must be of type string.');
+      }
+      if(!isLanguage.test(locale.language)) {
+        throw new TypeError('Wrong syntax on language code "' + locale.language + '". Language code should use two lowercase letters.');
+      }
+      if(typeof locale.region !== 'string') {
+        throw new TypeError('Region codes must be of type string.');
+      }
+      if(!isRegion.test(locale.region)) {
+        throw new TypeError('Wrong syntax on region code "' + locale.region + '". Region code should use two uppercase letters.');
+      }
     }
+
     // Store code
-    _this._codes.push(code);
+    if(typeof _this._locales[locale.language] !== 'undefined') {
+      if(typeof _this._locales[locale.language].regions.indexOf(locale.region) !== -1) {
+        _this._locales[locale.language].regions.push(locale.region);
+      }
+    }
+    else {
+      _this._locales[locale.language] = { regions : [locale.region] };
+    }
   });
 };
 
 /**
- * Default language if no-match occurs
+ * Default locale if no-match occurs
  *
- * @param {String} language
+ * @param {String} locale
  * @returns {void}
  * @throws {TypeError}
  * @api public
  */
 
-exports.default = function(language) {
-  if(typeof language !== 'object') {
-    throw new TypeError('First parameter must be an object');
+exports.default = function(locale) {
+  if(typeof locale === 'string') {
+    if(isLocale.test(locale)) {
+      locale = {
+        value : locale,
+        region : locale.substr(3, 2),
+        language : locale.substr(0, 2)
+      };
+    }
+    else {
+      throw new TypeError('First parameter is not a locale string e.g. en-US.');
+    }
   }
-  if(typeof language.code !== 'string') {
-    throw new TypeError('Property code must be a string and can\'t be undefined');
-  }
-  if(!isCode.test(language.code)) {
-    throw new TypeError('Property code must consist of two lowercase letters [a-z]');
-  }
-  if(typeof language.region === 'string' && !isRegion.test(language.region)) {
-    throw new TypeError('Property region must consist of two case-insensitive letters [a-zA-Z]');
+  else {
+    if(typeof locale !== 'object') {
+      throw new TypeError('First parameter must be a locale object.');
+    }
+    if(typeof locale.language !== 'string') {
+      throw new TypeError('Language code must be a string and can\'t be undefined.');
+    }
+    if(!isLanguage.test(locale.language)) {
+      throw new TypeError('Language code must consist of two lowercase letters [a-z].');
+    }
+    if(typeof locale.region !== 'string') {
+      throw new TypeError('Region code must be a string and can\'t be undefined.');
+    }
+    if(!isRegion.test(locale.region)) {
+      throw new TypeError('Region code must consist of two uppercase letters [A-Z].');
+    }
+
+    locale.value = locale.language + '-' + locale.region;
   }
 
-  // Set language quality to 1.0
-  language.quality = 1.0;
+  // Set locale quality to 1.0
+  locale.quality = 1.0;
 
-  this.defaultLanguage = language;
+  this.defaultLocale = locale;
 };
 
 /**
@@ -121,7 +195,7 @@ exports.parse = function(acceptLanguage) {
     return this.defaultLanguage ? [this.defaultLanguage] : [];
   }
   var strings = (acceptLanguage || '').match(acceptLanguageSyntax);
-  var languages = strings.map(function(match) {
+  var locales = strings.map(function(match) {
     if(!match){
       return;
     }
@@ -130,18 +204,22 @@ exports.parse = function(acceptLanguage) {
     var ietf = bits[0].split('-');
 
     return {
-      code: ietf[0],
+      language: ietf[0],
       region: ietf[1],
       quality: bits[1] ? parseFloat(bits[1].split('=')[1]) : 1.0
     };
   })
-  .filter(function(language) {
-    return language;
+
+  // filter out undefined
+  .filter(function(locale) {
+    return locale
   })
+
+  // Sort by quality
   .sort(function(a, b) {
     return b.quality - a.quality;
   });
 
-  return prune(languages);
+  return prune(locales);
 };
 
