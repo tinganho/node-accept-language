@@ -117,6 +117,10 @@ exports.default = function(language) {
  */
 
 exports.parse = function(acceptLanguage) {
+  if(typeof acceptLanguage === 'object' && acceptLanguage.headers) {
+    acceptLanguage = acceptLanguage.headers['accept-language'];
+  }
+
   if(typeof acceptLanguage !== 'string') {
     return this.defaultLanguage ? [this.defaultLanguage] : [];
   }

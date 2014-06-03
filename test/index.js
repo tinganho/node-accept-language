@@ -4,7 +4,9 @@
  */
 
 var sinonChai = require('sinon-chai')
-  , acceptLanguage = require('../');
+  , acceptLanguage = require('../')
+  , http = require('http')
+  , IncomingMessage = http.IncomingMessage;
 
 global.sinon = require('sinon');
 global.chai = require('chai');
@@ -152,6 +154,23 @@ describe('acceptLanguage', function() {
 
     it('should return empty array if the provided argument to `parse()` is not a string', function() {
         expect(acceptLanguage.parse(1)).to.eql([]);
+    });
+
+    describe('given a request', function () {
+      it('should parse the "Accept-Language" header', function () {
+        var req = new IncomingMessage;
+        req.headers['accept-language'] = 'en-US;q=0.8,zh-CN;q=1';
+        expect(acceptLanguage.parse(req)).to.eql([{
+          code : 'zh',
+          region : 'CN',
+          quality : 1
+        },
+        {
+          code : 'en',
+          region : 'US',
+          quality : 0.8
+        }]);
+      });
     });
   });
 
