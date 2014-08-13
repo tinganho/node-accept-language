@@ -20,19 +20,19 @@ Object.size = function(obj) {
  * Prototype
  */
 
-var acceptLanguage = exports = module.exports = {};
+var acceptLocale = exports = module.exports = {};
 
 /**
  * Languague codes
  */
 
-acceptLanguage._locales = {};
+acceptLocale._locales = {};
 
 /**
  * Default code
  */
 
-acceptLanguage.defaultLocale = null;
+acceptLocale.defaultLocale = null;
 
 /**
  * Prune locales that aren't defined
@@ -45,11 +45,11 @@ acceptLanguage.defaultLocale = null;
 function prune(locales) {
   var _this = this;
 
-  if(Object.size(acceptLanguage._locales) > 0) {
+  if(Object.size(acceptLocale._locales) > 0) {
     locales = locales
 
     .filter(function(locale) {
-      if(typeof acceptLanguage._locales[locale.language] === 'undefined') {
+      if(typeof acceptLocale._locales[locale.language] === 'undefined') {
         return false;
       }
       return true;
@@ -58,12 +58,12 @@ function prune(locales) {
     .map(function(locale) {
       if(typeof locale.region === 'string' && isRegion.test(locale.region)) {
         // Set the first defined region if there is no match region
-        if(acceptLanguage._locales[locale.language].regions.indexOf(locale.region) === -1) {
-          locale.region = acceptLanguage._locales[locale.language].regions[0];
+        if(acceptLocale._locales[locale.language].regions.indexOf(locale.region) === -1) {
+          locale.region = acceptLocale._locales[locale.language].regions[0];
         }
       }
       else {
-        locale.region = acceptLanguage._locales[locale.language].regions[0];
+        locale.region = acceptLocale._locales[locale.language].regions[0];
       }
       locale.value = locale.language + '-' + locale.region;
       return locale;
@@ -72,8 +72,8 @@ function prune(locales) {
 
   // If no codes matches the defined set. Return
   // the default language if it is set
-  if(locales.length === 0 && acceptLanguage.defaultLocale) {
-    return [acceptLanguage.defaultLocale];
+  if(locales.length === 0 && acceptLocale.defaultLocale) {
+    return [acceptLocale.defaultLocale];
   }
 
   return locales;
@@ -185,16 +185,16 @@ exports.default = function(locale) {
 /**
  * Parse accept language string
  *
- * @param {String} acceptLanguage
+ * @param {String} acceptLocale
  * @return {Array.<language>}
  * @api public
  */
 
-exports.parse = function(acceptLanguage) {
-  if(typeof acceptLanguage !== 'string') {
+exports.parse = function(acceptLocale) {
+  if(typeof acceptLocale !== 'string') {
     return this.defaultLanguage ? [this.defaultLanguage] : [];
   }
-  var strings = (acceptLanguage || '').match(acceptLanguageSyntax);
+  var strings = (acceptLocale || '').match(acceptLanguageSyntax);
   var locales = strings.map(function(match) {
     if(!match){
       return;
