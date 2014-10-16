@@ -8,14 +8,14 @@ accept-language [![Build Status](https://travis-ci.org/tinganho/node-accept-lang
 ### Installation:
 
 ```
-npm install accept-language --save
+npm install accept-locale --save
 ```
 
 ### Usage:
 
 ```
-var acceptLanguage = require('accept-language');
-var language = acceptLanguage.parse('en-GB,en;q=0.8,sv');
+var acceptLocale = require('accept-language');
+var language = acceptLocale.parse('en-GB,en;q=0.8,sv');
 
 console.log(language);
 ```
@@ -45,9 +45,9 @@ Output:
 Filter non-defined language codes:
 
 ```
-var acceptLanguage = require('accept-language');
-acceptLanguage.codes(['en', 'zh']);
-var language = acceptLanguage.parse('en-GB,en;q=0.8,sv');
+var acceptLocale = require('accept-language');
+acceptLocale.codes(['en', 'zh']);
+var language = acceptLocale.parse('en-GB,en;q=0.8,sv');
 
 console.log(language);
 ```
@@ -71,14 +71,14 @@ Output:
 Use default value:
 
 ```
-var acceptLanguage = require('accept-language');
-acceptLanguage.default({
+var acceptLocale = require('accept-language');
+acceptLocale.default({
     code : 'en',
     region : 'US'
     // No need to specify quality
 });
-acceptLanguage.codes(['en', 'zh']);
-var language = acceptLanguage.parse('fr-CA');
+acceptLocale.codes(['en', 'zh']);
+var language = acceptLocale.parse('fr-CA');
 
 console.log(language);
 ```
