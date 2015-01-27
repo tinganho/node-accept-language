@@ -14,10 +14,10 @@ npm install accept-locale --save
 ### Usage:
 
 ```
-var acceptLocale = require('accept-language');
-var language = acceptLocale.parse('en-GB,en;q=0.8,sv');
+var acceptLocale = require('accept-locale');
+var locale = acceptLocale.parse('en-GB,en;q=0.8,sv');
 
-console.log(language);
+console.log(locale);
 ```
 
 Output:
@@ -25,17 +25,17 @@ Output:
 ```
 [
   {
-    code: "en",
+    language: "en",
     region: "GB",
     quality: 1.0
   },
   {
-    code: "sv",
+    language: "sv",
     region: undefined,
     quality: 1.0
   },
   {
-    code: "en",
+    language: "en",
     region: undefined,
     quality: 0.8
   }
@@ -45,23 +45,23 @@ Output:
 Filter non-defined language codes:
 
 ```
-var acceptLocale = require('accept-language');
+var acceptLocale = require('accept-locale');
 acceptLocale.codes(['en', 'zh']);
-var language = acceptLocale.parse('en-GB,en;q=0.8,sv');
+var locale = acceptLocale.parse('en-GB,en;q=0.8,sv');
 
-console.log(language);
+console.log(locale);
 ```
 
 Output:
 ```
 [
   {
-    code: "en",
+    language: "en",
     region: "GB",
     quality: 1.0
   },
   {
-    code: "en",
+    language: "en",
     region: undefined,
     quality: 0.8
   }
@@ -71,23 +71,23 @@ Output:
 Use default value:
 
 ```
-var acceptLocale = require('accept-language');
+var acceptLocale = require('accept-locale');
 acceptLocale.default({
-    code : 'en',
+    language : 'en',
     region : 'US'
     // No need to specify quality
 });
 acceptLocale.codes(['en', 'zh']);
-var language = acceptLocale.parse('fr-CA');
+var locale = acceptLocale.parse('fr-CA');
 
-console.log(language);
+console.log(locale);
 ```
 
 Output:
 ```
 [
   {
-    code: "en",
+    language: "en",
     region: "US",
     quality: 1.0
   }
