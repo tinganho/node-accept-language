@@ -8,7 +8,7 @@ accept-language [![Build Status](https://travis-ci.org/tinganho/node-accept-lang
 ### Installation:
 
 ```
-npm install accept-locale --save
+npm install accept-language --save
 ```
 
 ### Usage:
