@@ -1,9 +1,9 @@
-accept-language [![Build Status](https://travis-ci.org/tinganho/node-accept-language.png)](https://travis-ci.org/tinganho/node-accept-language)
+accept-locale [![Build Status](https://travis-ci.org/tinganho/node-accept-locale.png)](https://travis-ci.org/tinganho/node-accept-locale)
 ========================
 
-[![NPM](https://nodei.co/npm/accept-language.png?downloads=true&stars=true)](https://nodei.co/npm/accept-language/)
+[![NPM](https://nodei.co/npm/accept-language.png?downloads=true&stars=true)](https://nodei.co/npm/accept-locale/)
 
-`accept-language` parses HTTP Accept-Language header and returns a consumable array of language codes.
+`accept-locale` parses HTTP Accept-Language header and returns a consumable array of locale data.
 
 ### Installation:
 
