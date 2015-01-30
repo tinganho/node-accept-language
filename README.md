@@ -4,7 +4,7 @@ accept-language [![Build Status](https://travis-ci.org/tinganho/node-accept-lang
 [![NPM](https://nodei.co/npm/accept-language.png?downloads=true&stars=true)](https://nodei.co/npm/accept-language/)
 
 ### Deprecated
-Because `languages` is a subset of locales. I have decided to rename this package to accept locale instead. https://github.com/tinganho/node-accept-locale. So please use accept-locale instead
+Because `languages` is a subset of locales. I have decided to rename this package to `accept-locale` instead. https://github.com/tinganho/node-accept-locale. So please use `accept-locale` instead.
 
 
 
