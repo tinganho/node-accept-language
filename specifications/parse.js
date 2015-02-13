@@ -72,5 +72,16 @@ module.exports = function(acceptLocale) {
         value : 'en-US'
       }]);
     });
+
+    it('should be able to parse a region with numbers', function() {
+      acceptLocale.locales(['en-US', 'es-ES']);
+      acceptLocale.default('en-US');
+      expect(acceptLocale.parse('es-419')).to.eql([{
+        language : 'es',
+        region : 'ES',
+        quality : 1,
+        value : 'es-ES'
+      }]);
+    });
   });
 };

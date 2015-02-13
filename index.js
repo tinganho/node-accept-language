@@ -3,15 +3,15 @@
  * Private variables
  */
 
-var acceptLanguageSyntax = /((([a-zA-Z]+(-[a-zA-Z]+)?)|\*)(;q=[0-1](\.[0-9]+)?)?)*/g
-  , isLocale = /^[a-z]{2}\-[A-Z]{2}$/
-  , isLanguage = /^[a-z]{2}$/
-  , isRegion = /^[A-Z]{2}$/;
+var acceptLanguageSyntax = /((([a-zA-Z]+(-[a-zA-Z]+)?)|\*)(;q=[0-1](\.[0-9]+)?)?)*/g;
+var isLocale = /^[a-z]{2}\-[A-Z]{2}$/;
+var isLanguage = /^[a-z]{2}$/;
+var isRegion = /^[A-Z]{2}$/;
 
 Object.size = function(obj) {
     var size = 0, key;
     for (key in obj) {
-        if (obj.hasOwnProperty(key)) size++;
+      if (obj.hasOwnProperty(key)) size++;
     }
     return size;
 };

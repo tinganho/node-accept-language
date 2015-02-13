@@ -69,6 +69,17 @@ module.exports = function(acceptLocale) {
       });
     });
 
+    it('should be able to set a region with numbers', function() {
+      acceptLocale.locales(['en-US', 'es-419']);
+      acceptLocale.default('es-419');
+      expect(acceptLocale.parse('es-419')).to.eql([{
+        language : 'es',
+        region : 'ES',
+        quality : 1,
+        value : 'es-ES'
+      }]);
+    });
+
     describe('should throw an error', function() {
       it('if string is not a locale string', function() {
         expect(function() {
