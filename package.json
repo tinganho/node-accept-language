@@ -1,6 +1,6 @@
 {
   "name": "accept-language",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "description": "HTTP Accept-Language parser for node",
   "main": "index.js",
   "scripts": {
