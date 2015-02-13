@@ -3,13 +3,7 @@ accept-language [![Build Status](https://travis-ci.org/tinganho/node-accept-lang
 
 [![NPM](https://nodei.co/npm/accept-language.png?downloads=true&stars=true)](https://nodei.co/npm/accept-language/)
 
-### Deprecated
-Because `languages` is a subset of locales. I have decided to rename this package to [accept-locale](https://github.com/tinganho/node-accept-locale) instead.
-
-
-
-
-`accept-language` parses HTTP Accept-Language header and returns a consumable array of language codes.
+`accept-language` parses HTTP Accept-Language header and returns a consumable array of language tags.
 
 ### Installation:
 
@@ -31,17 +25,17 @@ Output:
 ```
 [
   {
-    code: "en",
+    language: "en",
     region: "GB",
     quality: 1.0
   },
   {
-    code: "sv",
+    language: "sv",
     region: undefined,
     quality: 1.0
   },
   {
-    code: "en",
+    language: "en",
     region: undefined,
     quality: 0.8
   }
@@ -62,12 +56,12 @@ Output:
 ```
 [
   {
-    code: "en",
+    language: "en",
     region: "GB",
     quality: 1.0
   },
   {
-    code: "en",
+    language: "en",
     region: undefined,
     quality: 0.8
   }
@@ -79,8 +73,8 @@ Use default value:
 ```
 var acceptLanguage = require('accept-language');
 acceptLanguage.default({
-    code : 'en',
-    region : 'US'
+    language: 'en',
+    region: 'US'
     // No need to specify quality
 });
 acceptLanguage.codes(['en', 'zh']);
@@ -93,7 +87,7 @@ Output:
 ```
 [
   {
-    code: "en",
+    language: "en",
     region: "US",
     quality: 1.0
   }
