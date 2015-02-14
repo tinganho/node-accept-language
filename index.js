@@ -140,7 +140,7 @@ AcceptLanguage.prototype.prune_ = function(languageTags) {
  * @throws {TypeError}
  * @public
  */
-AcceptLanguage.prototype.languageTags = function(languageTags) {
+AcceptLanguage.prototype.languages = function(languageTags) {
   var this_ = this;
 
   // Reset language tags

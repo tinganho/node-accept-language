@@ -17,6 +17,6 @@ global.expect = require('chai').expect;
 chai.use(sinonChai);
 
 describe('acceptLanguage', function() {
-  require('./languageTags')(acceptLanguage);
+  require('./languages')(acceptLanguage);
   require('./parse')(acceptLanguage);
 });

@@ -1,9 +1,9 @@
 
 module.exports = function(acceptLanguage) {
-  describe('languageTags()', function() {
+  describe('languages()', function() {
     describe('set language tag', function() {
       it('should be able to set a language tag with region', function() {
-        acceptLanguage.languageTags(['en-US']);
+        acceptLanguage.languages(['en-US']);
         expect(acceptLanguage.languageTags_).to.eql({
           'en': {
             regions: ['US'],
@@ -14,7 +14,7 @@ module.exports = function(acceptLanguage) {
       });
 
       it('should be able to set a language tag with no region', function() {
-        acceptLanguage.languageTags(['en']);
+        acceptLanguage.languages(['en']);
         expect(acceptLanguage.languageTags_).to.eql({
           'en': {
             regions: [],
@@ -25,7 +25,7 @@ module.exports = function(acceptLanguage) {
       });
 
       it('should be able to set two language tag with no region, one with script tag, and it should use the last', function() {
-        acceptLanguage.languageTags(['zh', 'zh-Hans']);
+        acceptLanguage.languages(['zh', 'zh-Hans']);
         expect(acceptLanguage.languageTags_).to.eql({
           'zh': {
             regions: [],
@@ -36,7 +36,7 @@ module.exports = function(acceptLanguage) {
       });
 
       it('should be able to set multiple language tags with the same language subtags', function() {
-        acceptLanguage.languageTags(['en-US', 'en-GB']);
+        acceptLanguage.languages(['en-US', 'en-GB']);
         expect(acceptLanguage.languageTags_).to.eql({
           'en' : {
             regions: ['US', 'GB'],
@@ -47,7 +47,7 @@ module.exports = function(acceptLanguage) {
       });
 
       it('should be able to set multiple language tags with the same language subtags and with single language subtag', function() {
-        acceptLanguage.languageTags(['en-US', 'en-GB', 'en']);
+        acceptLanguage.languages(['en-US', 'en-GB', 'en']);
         expect(acceptLanguage.languageTags_).to.eql({
           'en' : {
             regions: ['US', 'GB'],
@@ -58,7 +58,7 @@ module.exports = function(acceptLanguage) {
       });
 
       it('should be able to set multiple language tags with regions', function() {
-        acceptLanguage.languageTags(['en-US', 'zh-CN']);
+        acceptLanguage.languages(['en-US', 'zh-CN']);
         expect(acceptLanguage.languageTags_).to.eql({
           'en': {
             regions: ['US'],
@@ -74,7 +74,7 @@ module.exports = function(acceptLanguage) {
       });
 
       it('should be able to set multiple language tags with no regions', function() {
-        acceptLanguage.languageTags(['en', 'zh']);
+        acceptLanguage.languages(['en', 'zh']);
         expect(acceptLanguage.languageTags_).to.eql({
           'en': {
             regions: [],
@@ -90,7 +90,7 @@ module.exports = function(acceptLanguage) {
       });
 
       it('should be able to set multiple language tag with no regions and with region with the same language', function() {
-        acceptLanguage.languageTags(['en', 'en-US']);
+        acceptLanguage.languages(['en', 'en-US']);
         expect(acceptLanguage.languageTags_).to.eql({
           'en': {
             regions: ['US'],
@@ -101,7 +101,7 @@ module.exports = function(acceptLanguage) {
       });
 
       it('should be able to set multiple language tag with no regions and with region with the different language', function() {
-        acceptLanguage.languageTags(['en', 'zh-CN']);
+        acceptLanguage.languages(['en', 'zh-CN']);
         expect(acceptLanguage.languageTags_).to.eql({
           'en' : {
             regions: [],
@@ -117,7 +117,7 @@ module.exports = function(acceptLanguage) {
       });
 
       it('should be able to set a language tag with a numeric region', function() {
-        acceptLanguage.languageTags(['es-419']);
+        acceptLanguage.languages(['es-419']);
         expect(acceptLanguage.languageTags_).to.eql({
           'es' : {
             regions: ['419'],
@@ -128,7 +128,7 @@ module.exports = function(acceptLanguage) {
       });
 
       it('should be able to set a language tag with a script sub tag', function() {
-        acceptLanguage.languageTags(['zh-Hant-TW']);
+        acceptLanguage.languages(['zh-Hant-TW']);
         expect(acceptLanguage.languageTags_).to.eql({
           'zh' : {
             regions: ['TW'],
@@ -140,28 +140,28 @@ module.exports = function(acceptLanguage) {
 
       it('should throw an error if using a non-string language tag', function() {
         var method = function() {
-          acceptLanguage.languageTags([1]);
+          acceptLanguage.languages([1]);
         }
         expect(method).to.throw('Your language tag (1) are not bcp47 compliant. For more info https://tools.ietf.org/html/bcp47.');
       });
 
       it('should throw an error if using incompliant language subtag', function() {
         var method = function() {
-          acceptLanguage.languageTags(['e-US']);
+          acceptLanguage.languages(['e-US']);
         }
         expect(method).to.throw('Your language tag (e-US) are not bcp47 compliant. For more info https://tools.ietf.org/html/bcp47.');
       });
 
       it('should throw an error if using incompliant region subtag', function() {
         var method = function() {
-          acceptLanguage.languageTags(['en-U']);
+          acceptLanguage.languages(['en-U']);
         }
         expect(method).to.throw('Your language tag (en-U) are not bcp47 compliant. For more info https://tools.ietf.org/html/bcp47.');
       });
 
       it('should throw an error if using incompliant script subtag', function() {
         var method = function() {
-          acceptLanguage.languageTags(['zh-Ha-TW']);
+          acceptLanguage.languages(['zh-Ha-TW']);
         }
         expect(method).to.throw('Your language tag (zh-Ha-TW) are not bcp47 compliant. For more info https://tools.ietf.org/html/bcp47.');
       });
@@ -169,7 +169,7 @@ module.exports = function(acceptLanguage) {
 
     describe('default language tag', function() {
       it('should be able to set a default language tag with a region', function() {
-        acceptLanguage.languageTags(['en-US']);
+        acceptLanguage.languages(['en-US']);
         expect(acceptLanguage.defaultLanguageTag).to.eql({
           value: 'en-US',
           language: 'en',
@@ -179,7 +179,7 @@ module.exports = function(acceptLanguage) {
       });
 
       it('should be able to set a default language tag with no region', function() {
-        acceptLanguage.languageTags(['en']);
+        acceptLanguage.languages(['en']);
         expect(acceptLanguage.defaultLanguageTag).to.eql({
           value: 'en',
           language: 'en',
@@ -189,7 +189,7 @@ module.exports = function(acceptLanguage) {
       });
 
       it('should be able to set a default language tag from a multitude of language tags with no regions', function() {
-        acceptLanguage.languageTags(['en', 'zh']);
+        acceptLanguage.languages(['en', 'zh']);
         expect(acceptLanguage.defaultLanguageTag).to.eql({
           value: 'en',
           language: 'en',
@@ -199,7 +199,7 @@ module.exports = function(acceptLanguage) {
       });
 
       it('should be able to set a default language tag from a multitude of language tags with regions', function() {
-        acceptLanguage.languageTags(['en-US', 'zh-CN']);
+        acceptLanguage.languages(['en-US', 'zh-CN']);
         expect(acceptLanguage.defaultLanguageTag).to.eql({
           value: 'en-US',
           language: 'en',
