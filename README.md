@@ -17,12 +17,15 @@ npm install accept-language --save
 var acceptLanguage = require('accept-language');
 accepLanguage.languageTags(['en-US', 'zh-CN']);
 console.log(accepLanguage.get('en-GB,en;q=0.8,sv'));
-// outputs: 'en-US'
+/*
 
+'en-US'
+
+*/
 var language = acceptLanguage.parse('en-GB,en;q=0.8,sv');
 console.log(language);
-
 /*
+
 [
   {
     value: 'en-US',
@@ -31,6 +34,7 @@ console.log(language);
     quality: 1.0
   }
 ];
+
 */
 ```
 ### Recommended usage with L10ns:
