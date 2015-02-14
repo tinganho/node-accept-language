@@ -1,225 +1,250 @@
 
+
 /**
- * Private variables
+ * Dependencies
  */
+var bcp47 = require('bcp47');
 
-var acceptLanguageSyntax = /((([a-zA-Z]+(-[a-zA-Z]+)?)|\*)(;q=[0-1](\.[0-9]+)?)?)*/g;
-var isLocale = /^[a-z]{2}\-[A-Z]{2}$/;
-var isLanguage = /^[a-z]{2}$/;
-var isRegion = /^[A-Z]{2}$/;
 
-Object.size = function(obj) {
-    var size = 0, key;
-    for (key in obj) {
-      if (obj.hasOwnProperty(key)) size++;
-    }
-    return size;
+/**
+ * Object's size
+ */
+Object.size = function(object) {
+  var size = 0, key;
+  for (key in object) {
+    if (object.hasOwnProperty(key)) size++;
+  }
+  return size;
 };
 
+
 /**
- * Prototype
+ * AcceptLanguage
  */
+var AcceptLanguage = function() {};
 
-var acceptLanguage = exports = module.exports = {};
-
-/**
- * Languague codes
- */
-
-acceptLanguage._locales = {};
 
 /**
- * Default code
- */
-
-acceptLanguage.defaultLocale = null;
-
-/**
- * Prune locales that aren't defined
+ * Language tags
  *
- * @param {Array.<locale>} locales
- * @return {Array.<locale>}
- * @api public
+ * @type {Objects}
+ * @public
  */
+AcceptLanguage.prototype.languageTags_ = {};
 
-function prune(locales) {
-  var _this = this;
 
-  if(Object.size(acceptLanguage._locales) > 0) {
-    locales = locales
+/**
+ * Default language tag
+ *
+ * @type {String}
+ */
+AcceptLanguage.prototype.defaultLanguageTag = null;
 
-    .filter(function(locale) {
-      if(typeof acceptLanguage._locales[locale.language] === 'undefined') {
-        return false;
-      }
-      return true;
-    })
 
-    .map(function(locale) {
-      if(typeof locale.region === 'string' && isRegion.test(locale.region)) {
-        // Set the first defined region if there is no match region
-        if(acceptLanguage._locales[locale.language].regions.indexOf(locale.region) === -1) {
-          locale.region = acceptLanguage._locales[locale.language].regions[0];
+/**
+ * Prune language tags that aren't defined
+ *
+ * @param {Array.<languageTag>} languageTags
+ * @return {Array.<{ value: String, quality: Number }>}
+ * @private
+ */
+AcceptLanguage.prototype.prune_ = function(languageTags) {
+  var this_ = this;
+
+  if(Object.size(this.languageTags_) > 0) {
+    languageTags = languageTags
+      .filter(function(languageTag) {
+        var language = languageTag.language;
+        // Filter non-defined language tags.
+        if(typeof this_.languageTags_[language] === 'undefined') {
+          return false;
         }
-      }
-      else {
-        locale.region = acceptLanguage._locales[locale.language].regions[0];
-      }
-      locale.value = locale.language + '-' + locale.region;
-      return locale;
-    });
+
+        // Filter tags with only language sub tags that doesn't
+        // have the supported language. E.g. our defined set is
+        // ['en'] but th acceptLanguageString is ['es']. So we
+        // filter away ['es'].
+        if(!languageTag.region) {
+          if(!this_.languageTags_[language].hasOnlyLanguage) {
+            return false;
+          }
+        }
+
+        return true;
+      })
+
+      .map(function(languageTag) {
+        var language = languageTag.language;
+        if(languageTag.region) {
+          var regionIndex = this_.languageTags_[language].regions.indexOf(languageTag.region);
+          var hasRegion = true;
+          if(regionIndex === -1) {
+            hasRegion = false;
+            regionIndex = 0;
+          }
+
+          // It should return the first matching region language tag
+          // only if it doesn't contain ony root language tag.
+          // So if the define language tags are ['es-419', 'es-US']
+          // and the Accept-Language string is ['es-ES']. We should
+          // return 'es-419', because it has the biggest priority.
+          //
+          // Whenever it matches only language subtag and not region
+          // tags and there exist one root language tag. We should
+          // return the root language tag. E.g. If we have the set
+          // ['es', 'es-419'] and the Accept-Language string is
+          // 'es-ES'. Then we should return just ['es'].
+          //
+          // Wheneve it matches both language and region subtag it
+          // should return that matched language tag, regardless if
+          // there exist any root only languae subtag. E.g. If we
+          // have the set ['es', 'es-419', 'es-PO'] and the Accept-
+          // Language header is 'es-419'. Then we should return
+          // ['es-419'].
+          if(typeof this_.languageTags_[language].values[regionIndex] !== 'undefined') {
+            if(hasRegion || !this_.languageTags_[language].onlyLanguageValue) {
+              return {
+                value: this_.languageTags_[language].values[regionIndex],
+                language: language,
+                region: this_.languageTags_[language].regions[regionIndex] || null,
+                quality: languageTag.quality
+              };
+            }
+          }
+          return {
+            value: this_.languageTags_[language].onlyLanguageValue,
+            language: language,
+            region: null,
+            quality: languageTag.quality
+          };
+
+        }
+        return languageTag;
+      });
   }
 
-  // If no codes matches the defined set. Return
-  // the default language if it is set
-  if(locales.length === 0 && acceptLanguage.defaultLocale) {
-    return [acceptLanguage.defaultLocale];
+  // If no language tags matches the defined set
+  if(languageTags.length === 0 && this_.defaultLanguageTag) {
+    return [this_.defaultLanguageTag];
   }
 
-  return locales;
+  return languageTags;
 };
 
+
 /**
- * Define codes
+ * Define languages
  *
- * @param {Array.<code>} codes
+ * @param {Array.<String>} languageTags
  * @return {void}
  * @throws {TypeError}
- * @api public
+ * @public
  */
+AcceptLanguage.prototype.languageTags = function(languageTags) {
+  var this_ = this;
 
-exports.locales = function(locales) {
-  var _this = this;
+  // Reset language tags
+  this.languageTags_ = {};
 
-  // Reset locales
-  this._locales = {};
-
-  locales.forEach(function(locale) {
-    if(typeof locale === 'string') {
-      if(isLocale.test(locale)) {
-        locale = {
-          value : locale,
-          region : locale.substr(3, 2),
-          language : locale.substr(0, 2)
-        };
-      }
-      else {
-        throw new TypeError('First parameter is not a locale string e.g. en-US.');
-      }
+  languageTags.forEach(function(languageTagString) {
+    var languageTag = bcp47.parse(languageTagString);
+    if(!languageTag) {
+      throw new TypeError('Your language tag (' + languageTagString + ') are not bcp47 compliant. For more info https://tools.ietf.org/html/bcp47.');
     }
-    else {
-      if(typeof locale.language !== 'string') {
-        throw new TypeError('Language codes must be of type string.');
-      }
-      if(!isLanguage.test(locale.language)) {
-        throw new TypeError('Wrong syntax on language code "' + locale.language + '". Language code should use two lowercase letters.');
-      }
-      if(typeof locale.region !== 'string') {
-        throw new TypeError('Region codes must be of type string.');
-      }
-      if(!isRegion.test(locale.region)) {
-        throw new TypeError('Wrong syntax on region code "' + locale.region + '". Region code should use two uppercase letters.');
-      }
-    }
-
-    // Store code
-    if(typeof _this._locales[locale.language] !== 'undefined') {
-      if(typeof _this._locales[locale.language].regions.indexOf(locale.region) !== -1) {
-        _this._locales[locale.language].regions.push(locale.region);
-      }
-    }
-    else {
-      _this._locales[locale.language] = { regions : [locale.region] };
-    }
-  });
-};
-
-/**
- * Default locale if no-match occurs
- *
- * @param {String} locale
- * @returns {void}
- * @throws {TypeError}
- * @api public
- */
-
-exports.default = function(locale) {
-  if(typeof locale === 'string') {
-    if(isLocale.test(locale)) {
-      locale = {
-        value : locale,
-        region : locale.substr(3, 2),
-        language : locale.substr(0, 2)
+    var language = languageTag.langtag.language.language;
+    var region = languageTag.langtag.region;
+    if(!this_.languageTags_[language]) {
+      this_.languageTags_[language] = {
+        values: region ? [languageTagString] : [],
+        regions: region ? [region] : [],
+        onlyLanguageValue: null
       };
     }
     else {
-      throw new TypeError('First parameter is not a locale string e.g. en-US.');
+      if(region) {
+        this_.languageTags_[language].values.push(languageTagString);
+        this_.languageTags_[language].regions.push(region);
+      }
     }
-  }
-  else {
-    if(typeof locale !== 'object') {
-      throw new TypeError('First parameter must be a locale object.');
+    if(!region) {
+      this_.languageTags_[language].onlyLanguageValue = languageTagString;
     }
-    if(typeof locale.language !== 'string') {
-      throw new TypeError('Language code must be a string and can\'t be undefined.');
-    }
-    if(!isLanguage.test(locale.language)) {
-      throw new TypeError('Language code must consist of two lowercase letters [a-z].');
-    }
-    if(typeof locale.region !== 'string') {
-      throw new TypeError('Region code must be a string and can\'t be undefined.');
-    }
-    if(!isRegion.test(locale.region)) {
-      throw new TypeError('Region code must consist of two uppercase letters [A-Z].');
-    }
+  });
 
-    locale.value = locale.language + '-' + locale.region;
-  }
-
-  // Set locale quality to 1.0
-  locale.quality = 1.0;
-
-  this.defaultLocale = locale;
+  var defaultLanguageTag = bcp47.parse(languageTags[0]);
+  this.defaultLanguageTag = {
+    value: languageTags[0],
+    language: defaultLanguageTag.langtag.language.language,
+    region: defaultLanguageTag.langtag.region,
+    quality: 1.0
+  };
 };
+
 
 /**
  * Parse accept language string
  *
- * @param {String} acceptLanguage
- * @return {Array.<language>}
- * @api public
+ * @param {String} string Accept-Language string
+ * @return {Array.<{ value: String, quality: Number }>}
+ * @public
  */
-
-exports.parse = function(acceptLanguage) {
-  if(typeof acceptLanguage !== 'string') {
-    return this.defaultLanguage ? [this.defaultLanguage] : [];
+AcceptLanguage.prototype.parse = function(string) {
+  if(typeof string !== 'string' || string.length === 0) {
+    return this.defaultLanguageTag ? [this.defaultLanguageTag] : [];
   }
-  var strings = (acceptLanguage || '').match(acceptLanguageSyntax);
-  var locales = strings.map(function(match) {
-    if(!match){
-      return;
+
+  var languageTags = string.split(',');
+  languageTags = languageTags.map(function(languageTagString) {
+    languageTagString = languageTagString.replace(/\s+/, '');
+    var components = languageTagString.split(';');
+    var languageTag = bcp47.parse(components[0]);
+
+    if(!languageTag) {
+      return null;
     }
 
-    var bits = match.split(';');
-    var ietf = bits[0].split('-');
-
     return {
-      language: ietf[0],
-      region: ietf[1],
-      quality: bits[1] ? parseFloat(bits[1].split('=')[1]) : 1.0
+      value: components[0],
+      language: languageTag.langtag.language.language,
+      region: languageTag.langtag.region,
+      quality: components[1] ? parseFloat(components[1].split('=')[1]) : 1.0
     };
   })
 
-  // filter out undefined
-  .filter(function(locale) {
-    return locale
+  // Filter non-defined language tags
+  .filter(function(languageTag) {
+    return languageTag;
   })
 
-  // Sort by quality
+  // Sort language tags
   .sort(function(a, b) {
     return b.quality - a.quality;
   });
 
-  return prune(locales);
+  return this.prune_(languageTags);
 };
+
+
+/**
+ * Get most suitable language tag
+ *
+ * @param {String} string Accept-Language string
+ * @return {String}
+ * @public
+ */
+AcceptLanguage.prototype.get = function(string) {
+  return this.parse(string)[0].value;
+};
+
+/**
+ * For use as a single-ton
+ */
+module.exports = new AcceptLanguage();
+
+/**
+ * For use as a non-singleton
+ */
+
+module.exports.AcceptLanguage = AcceptLanguage;
+
 

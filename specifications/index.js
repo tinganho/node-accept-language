@@ -3,8 +3,8 @@
  * Modules
  */
 
-var sinonChai = require('sinon-chai')
-  , acceptLocale = require('../');
+var sinonChai = require('sinon-chai');
+var acceptLanguage = require('../');
 
 global.sinon = require('sinon');
 global.chai = require('chai');
@@ -16,8 +16,7 @@ global.expect = require('chai').expect;
 
 chai.use(sinonChai);
 
-describe('acceptLocale', function() {
-  require('./locales')(acceptLocale);
-  require('./default')(acceptLocale);
-  require('./parse')(acceptLocale);
+describe('acceptLanguage', function() {
+  require('./languageTags')(acceptLanguage);
+  require('./parse')(acceptLanguage);
 });
