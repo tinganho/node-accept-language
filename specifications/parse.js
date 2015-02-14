@@ -178,4 +178,12 @@ module.exports = function(acceptLanguage) {
       }]);
     });
   });
+
+  describe('get()', function() {
+    it('should be able to get the first value', function() {
+      var acceptLanguage = new AcceptLanguage();
+      acceptLanguage.languageTags(['en-US', 'zh-CN']);
+      expect(acceptLanguage.get('en-US;q=0.8, zh-CN;q=1.0')).to.eql('zh-CN');
+    });
+  });
 };
