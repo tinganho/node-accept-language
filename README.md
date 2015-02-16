@@ -5,7 +5,15 @@ accept-locale [![Build Status](https://travis-ci.org/tinganho/node-accept-locale
 
 `accept-locale` parses HTTP Accept-Language header and returns a consumable array of locale data.
 
-## DEPRECATED LIBRARY: please use [accept-language](https://github.com/tinganho/node-accept-language) instead.
+## DEPRECATED LIBRARY: please use [accept-language][] instead.
+
+I thought before that `languages` where a subset of `locales`, thus I created this library. I made a mistake about `language` vs. `locale` naming. After some research `language tags` are not synonymous with just `language`. The name `locale` was used widely before the usage of `language tags` for major i18n libraries. There is one major difference between language tags and locale identifiers and that is explained by w3c:
+
+> A major difference between language tags and locale identifiers is the meaning of the region code. In both language tags and locales, the region code indicates variation in language (as with regional dialects) or presentation and format (such as number or date formats). In a locale, the region code is also sometimes used to indicate the physical location, market, legal, or other governing policies for the user.
+
+Many libraries use the [BCP47](https://tools.ietf.org/html/bcp47) language tags. Since this standard refer to `language tags` or just `language` – I decided to deprecate this library, because of naming confusions.
+
+Sorry for any problems I caused with this change.
 
 
 ### Installation:
@@ -99,3 +107,5 @@ Output:
 
 
 The output is always sorted with the highest quality first.
+
+[accept-language]: https://github.com/tinganho/node-accept-language
