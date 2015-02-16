@@ -11,7 +11,7 @@ I thought before that `languages` where a subset of `locales`, thus I created th
 
 > A major difference between language tags and locale identifiers is the meaning of the region code. In both language tags and locales, the region code indicates variation in language (as with regional dialects) or presentation and format (such as number or date formats). In a locale, the region code is also sometimes used to indicate the physical location, market, legal, or other governing policies for the user.
 
-Many libraries use the [BCP47](https://tools.ietf.org/html/bcp47) language tags. Since this standard refer to `language tags` or just `language` – I decided to deprecate this library, because of naming confusions.
+Many libraries use the [BCP47](https://tools.ietf.org/html/bcp47) language tags. Since this standard refer to `language tags` or just `language` – I decided to deprecate this library, because of naming confusions. Please use [accept-language][] instead.
 
 Sorry for any problems I caused with this change.
 
