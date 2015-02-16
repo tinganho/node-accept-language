@@ -5,6 +5,9 @@ accept-locale [![Build Status](https://travis-ci.org/tinganho/node-accept-locale
 
 `accept-locale` parses HTTP Accept-Language header and returns a consumable array of locale data.
 
+## DEPRECATED LIBRARY: please use [accept-language](https://github.com/tinganho/node-accept-language) instead.
+
+
 ### Installation:
 
 ```
