@@ -63,13 +63,13 @@ acceptLanguage.languages(['en-US', 'zh-CN']);
 #### acceptLanguage.get(String acceptLanguageString);
 Get the most likely language given an `Accept-Language` string. In order for it to work you must set all your languages first.
 ```javascript
-acceptLanguage.get('en-GB,en;q=0.8,sv'));
+acceptLanguage.get('en-GB,en;q=0.8,sv');
 ```
 
 #### acceptLanguage.parse(String acceptLanguageString);
 Parse an `Accept-Language` string and get a consumable array of languages. In order for it to work you must set all your language tags first.
 ```javascript
-acceptLanguage.parse('en-GB,en;q=0.8,sv'));
+acceptLanguage.parse('en-GB,en;q=0.8,sv');
 ```
 
 ### Maintainer
