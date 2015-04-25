@@ -156,7 +156,7 @@ AcceptLanguage.prototype.languages = function(languageTags) {
     if(!this_.languageTags_[language]) {
       this_.languageTags_[language] = {
         values: region ? [languageTagString] : [],
-        regions: region ? [region] : [],
+        regions: region ? [region] : [],
         onlyLanguageValue: null
       };
     }
