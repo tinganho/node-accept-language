@@ -15,8 +15,8 @@ npm install accept-language --save
 
 ```javascript
 var acceptLanguage = require('accept-language');
-accepLanguage.languages(['en-US', 'zh-CN']);
-console.log(accepLanguage.get('en-GB,en;q=0.8,sv'));
+acceptLanguage.languages(['en-US', 'zh-CN']);
+console.log(acceptLanguage.get('en-GB,en;q=0.8,sv'));
 /*
 
 'en-US'
