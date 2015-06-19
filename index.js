@@ -60,16 +60,6 @@ AcceptLanguage.prototype.prune_ = function(languageTags) {
           return false;
         }
 
-        // Filter tags with only language sub tags that doesn't
-        // have the supported language. E.g. our defined set is
-        // ['en'] but th acceptLanguageString is ['es']. So we
-        // filter away ['es'].
-        if(!languageTag.region) {
-          if(!this_.languageTags_[language].hasOnlyLanguage) {
-            return false;
-          }
-        }
-
         return true;
       })
 
