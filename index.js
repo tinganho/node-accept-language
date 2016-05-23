@@ -9,24 +9,10 @@ var bcp47 = require('bcp47');
 /**
  * AcceptLanguage
  */
-var AcceptLanguage = function() {};
-
-
-/**
- * Language tags
- *
- * @type {Objects}
- * @public
- */
-AcceptLanguage.prototype.languageTags_ = {};
-
-
-/**
- * Default language tag
- *
- * @type {String}
- */
-AcceptLanguage.prototype.defaultLanguageTag = null;
+function AcceptLanguage() {
+    this.languageTags_ = {};
+    this.defaultLanguageTag = null;
+}
 
 
 /**
