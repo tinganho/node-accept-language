@@ -7,18 +7,6 @@ var bcp47 = require('bcp47');
 
 
 /**
- * Object's size
- */
-Object.size = function(object) {
-  var size = 0, key;
-  for (key in object) {
-    if (object.hasOwnProperty(key)) size++;
-  }
-  return size;
-};
-
-
-/**
  * AcceptLanguage
  */
 var AcceptLanguage = function() {};
@@ -51,7 +39,7 @@ AcceptLanguage.prototype.defaultLanguageTag = null;
 AcceptLanguage.prototype.prune_ = function(languageTags) {
   var this_ = this;
 
-  if(Object.size(this.languageTags_) > 0) {
+  if(Object.keys(this.languageTags_).length > 0) {
     languageTags = languageTags
       .filter(function(languageTag) {
         var language = languageTag.language;
