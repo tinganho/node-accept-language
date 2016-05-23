@@ -19,4 +19,6 @@ chai.use(sinonChai);
 describe('acceptLanguage', function() {
   require('./languages')(acceptLanguage);
   require('./parse')(acceptLanguage);
+  require('./get')(acceptLanguage);
+  require('./lookup')(acceptLanguage);
 });
