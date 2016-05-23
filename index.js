@@ -9,10 +9,24 @@ var bcp47 = require('bcp47');
 /**
  * AcceptLanguage
  */
-function AcceptLanguage() {
-    this.languageTags_ = {};
-    this.defaultLanguageTag = null;
-}
+function AcceptLanguage() {}
+
+
+/**
+ * Language tags
+ *
+ * @type {Objects}
+ * @public
+ */
+AcceptLanguage.prototype.languageTags_ = {};
+
+
+/**
+ * Default language tag
+ *
+ * @type {String}
+ */
+AcceptLanguage.prototype.defaultLanguageTag = null;
 
 
 /**
@@ -116,6 +130,9 @@ AcceptLanguage.prototype.languages = function(languageTags) {
       throw new TypeError('Your language tag (' + languageTagString + ') are not bcp47 compliant. For more info https://tools.ietf.org/html/bcp47.');
     }
     var language = languageTag.langtag.language.language;
+    if(!language) {
+      throw new TypeError('Your language tag (' + languageTagString + ') is not supported.');
+    }
     var region = languageTag.langtag.region;
     if(!this_.languageTags_[language]) {
       this_.languageTags_[language] = {

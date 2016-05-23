@@ -145,6 +145,20 @@ module.exports = function(acceptLanguage) {
         expect(method).to.throw('Your language tag (1) are not bcp47 compliant. For more info https://tools.ietf.org/html/bcp47.');
       });
 
+      it('should throw an error because the bcp47 does nut support wildcard subtags', function() {
+        var method = function() {
+          acceptLanguage.languages(['*-CH']); // (valid) example from RFC 4647
+        }
+        expect(method).to.throw('Your language tag (*-CH) are not bcp47 compliant. For more info https://tools.ietf.org/html/bcp47.');
+      });
+
+      it('should throw an error because the bcp47 does nut support wildcard subtags', function() {
+        var method = function() {
+          acceptLanguage.languages(['de-*-DE']); // (valid) example from RFC 4647
+        }
+        expect(method).to.throw('Your language tag (de-*-DE) are not bcp47 compliant. For more info https://tools.ietf.org/html/bcp47.');
+      });
+
       it('should throw an error if using incompliant language subtag', function() {
         var method = function() {
           acceptLanguage.languages(['e-US']);
@@ -164,6 +178,13 @@ module.exports = function(acceptLanguage) {
           acceptLanguage.languages(['zh-Ha-TW']);
         }
         expect(method).to.throw('Your language tag (zh-Ha-TW) are not bcp47 compliant. For more info https://tools.ietf.org/html/bcp47.');
+      });
+
+      it('should throw an error because private use tags are not supported', function() {
+        var method = function() {
+          acceptLanguage.languages(['x-pirate']);
+        }
+        expect(method).to.throw('Your language tag (x-pirate) is not supported.');
       });
     });
 
