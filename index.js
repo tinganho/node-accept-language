@@ -7,21 +7,11 @@ var bcp47 = require('bcp47');
 
 
 /**
- * Object's size
- */
-Object.size = function(object) {
-  var size = 0, key;
-  for (key in object) {
-    if (object.hasOwnProperty(key)) size++;
-  }
-  return size;
-};
-
-
-/**
  * AcceptLanguage
  */
-var AcceptLanguage = function() {};
+function AcceptLanguage() {
+  this.byLowerCaseTag = {};
+}
 
 
 /**
@@ -51,7 +41,7 @@ AcceptLanguage.prototype.defaultLanguageTag = null;
 AcceptLanguage.prototype.prune_ = function(languageTags) {
   var this_ = this;
 
-  if(Object.size(this.languageTags_) > 0) {
+  if(Object.keys(this.languageTags_).length > 0) {
     languageTags = languageTags
       .filter(function(languageTag) {
         var language = languageTag.language;
@@ -132,9 +122,11 @@ AcceptLanguage.prototype.prune_ = function(languageTags) {
  */
 AcceptLanguage.prototype.languages = function(languageTags) {
   var this_ = this;
+  var byLowerCaseTag = {};
 
   // Reset language tags
   this.languageTags_ = {};
+  this.byLowerCaseTag = byLowerCaseTag;
 
   languageTags.forEach(function(languageTagString) {
     var languageTag = bcp47.parse(languageTagString);
@@ -142,7 +134,11 @@ AcceptLanguage.prototype.languages = function(languageTags) {
       throw new TypeError('Your language tag (' + languageTagString + ') are not bcp47 compliant. For more info https://tools.ietf.org/html/bcp47.');
     }
     var language = languageTag.langtag.language.language;
+    if(!language) {
+      throw new TypeError('Your language tag (' + languageTagString + ') is not supported.');
+    }
     var region = languageTag.langtag.region;
+    byLowerCaseTag[languageTagString.toLowerCase()] = languageTagString;
     if(!this_.languageTags_[language]) {
       this_.languageTags_[language] = {
         values: region ? [languageTagString] : [],
@@ -226,8 +222,84 @@ AcceptLanguage.prototype.get = function(string) {
   return this.parse(string)[0].value;
 };
 
+
 /**
- * For use as a single-ton
+ * Look up most suitable language tag according to BCP 47 rules, more precisely RFC 4647 "3.4. Lookup"
+ *
+ * @param {String} languagePriorityList Accept-Language header string
+ * @return {String}
+ * @public
+ */
+AcceptLanguage.prototype.lookup = function(languagePriorityList) {
+  if(typeof languagePriorityList !== 'string' || languagePriorityList.length === 0) {
+    return null;
+  }
+
+  var parsedAndSortedLanguageRanges = languagePriorityList.split(',').map(function(weightedLanguageRange) {
+    var components = weightedLanguageRange.replace(/\s+/, '').split(';');
+    return {
+      languageRange: components[0],
+      quality: components[1] ? parseFloat(components[1].split('=')[1]) : 1.0
+    };
+  })
+  // sort language ranges
+  .sort(function(a, b) {
+    return b.quality - a.quality;
+  });
+
+  // Array findIndex() would be more elegant, but it needs ECMAScript 2015
+  var i0, n0;
+  var languageRange; // term "language range" as used in RFC 4647
+  var prefixes;
+  var i1, n1;
+  var match;
+  for (i0=0, n0=parsedAndSortedLanguageRanges.length; i0<n0; i0++) {
+    languageRange = parsedAndSortedLanguageRanges[i0].languageRange;
+    if (match = this.byLowerCaseTag[languageRange.toLowerCase()]) {
+      return match;
+    }
+    prefixes = getPrefixes(languageRange);
+    for (i1=0, n1=prefixes.length; i1<n1; i1++) {
+      if (match = this.byLowerCaseTag[prefixes[i1]]) {
+        return match;
+      }
+    }
+  }
+  return null;
+
+  function getPrefixes(languageRange) {
+    var languageTag = bcp47.parse(languageRange);
+    if (!languageTag || !languageTag.langtag.language.language) { // langtag languages only
+      return [];
+    }
+    var langtag = languageTag.langtag;
+    var prefix = langtag.language.language.toLowerCase(); // the primary language is the shortest prefix
+    var prefixes = [prefix];
+    var delimiter = '-';
+    ['extlang', 'script', 'region', 'variant', 'extension', 'privateuse'].forEach(function(property) {
+      if (property === 'privateuse') {
+        delimiter = '-x-';
+      }
+      if (langtag[property] instanceof Array) {
+        langtag[property].forEach(check);
+      } else {
+        check(langtag[property]);
+      }
+
+      function check(subtag) {
+        if (subtag) {
+          prefix += delimiter + subtag.toLowerCase();
+          delimiter = '-';
+          prefixes.push(prefix);
+        }
+      }
+    });
+    return prefixes.reverse();
+  }
+};
+
+/**
+ * For use as a singleton
  */
 module.exports = new AcceptLanguage();
 
