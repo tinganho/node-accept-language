@@ -36,6 +36,18 @@ console.log(language);
 ];
 
 */
+
+var acceptLanguageInstance = new acceptLanguage.AcceptLanguage();
+acceptLanguageInstance.languages(['en-UK', 'zh-CN']); // note UK, not US as above
+console.log(acceptLanguageInstance.get('en-GB,en;q=0.8,sv'));
+console.log(acceptLanguage.get('en-GB,en;q=0.8,sv'));
+/*
+
+'en-UK'
+'en-US'
+
+*/
+
 ```
 ### Recommended usage with L10ns:
 [L10ns][] is an internationalization workflow and formatting tool. This library was specifically built for [L10ns](http://l10ns.org). [L10ns][] is a very good alternative to Gettext and all of it's tooling support–XGettext, PoEdit, custom libraries etc.
@@ -70,6 +82,13 @@ acceptLanguage.get('en-GB,en;q=0.8,sv');
 Parse an `Accept-Language` string and get a consumable array of languages. In order for it to work you must set all your language tags first.
 ```javascript
 acceptLanguage.parse('en-GB,en;q=0.8,sv');
+```
+
+#### new acceptLanguage.AcceptLanguage()
+Create a new instance of AcceptLanguage (if you want to set different instances of supported languages).
+```javascript
+var langInstance = new acceptLanguage.AcceptLanguage('en-GB,en;q=0.8,sv');
+langInstance.languages(['en-UK', 'zh-CN']);
 ```
 
 ### Maintainer
