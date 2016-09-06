@@ -26,6 +26,8 @@
     "chai": "~1.9.1"
   },
   "dependencies": {
+    "@types/chai": "^3.4.32",
+    "@types/mocha": "^2.2.31",
     "bcp47": "^1.1.2"
   }
 }

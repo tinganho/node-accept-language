@@ -41,8 +41,12 @@ class AcceptLanguage {
     }
 
 
-    public get(languagePriorityList: string) {
-        this.parse(languagePriorityList)[0];
+    public get(languagePriorityList: string): string | null {
+        return this.parse(languagePriorityList)[0];
+    }
+
+    public create(): this {
+        return null as any;
     }
 
     private parse(languagePriorityList: string) {
@@ -53,7 +57,7 @@ class AcceptLanguage {
         for (const languageTag of parsedAndSortedLanguageTags) {
             const requestedLangTag = bcp47.parse(languageTag.tag).langtag;
 
-            if (this.languageTagsWithValues[requestedLangTag.language.language]) {
+            if (!this.languageTagsWithValues[requestedLangTag.language.language]) {
                 continue;
             }
 
@@ -117,7 +121,11 @@ class AcceptLanguage {
 }
 
 export function create() {
-    return new AcceptLanguage();
+    const al = new AcceptLanguage();
+    al.create = function() {
+        return new AcceptLanguage();
+    }
+    return al;
 }
 
 export default create();

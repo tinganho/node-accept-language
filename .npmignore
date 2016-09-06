@@ -1,7 +1,5 @@
-specifications
-binaries
-bin
+
 .travis.yml
-Gruntfile.js
-.gitignore
-.editorconfig
+index.ts
+
+Typings/
