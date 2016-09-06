@@ -87,7 +87,16 @@ describe('Language definitions', () => {
     });
 
     it('should match on multiple subscript', () => {
-        const al = createInstance(['sv-SE', 'zh-Hant-CN']);
-        expect(al.get('en-US;q=0.8,zh-Hant-CN;q=1')).to.equal('zh-Hant-CN');
+        const al = createInstance(['sv-SE', 'zh-Hant-CN-x-red']);
+        expect(al.get('en-US;q=0.8,zh-Hant-CN-x-red;q=1')).to.equal('zh-Hant-CN-x-red');
+    });
+
+    it('should match subscripts based on priority', () => {
+        const al = createInstance(['sv-SE', 'zh-Hant-CN-x-private1-private2']);
+        expect(al.get('en-US;q=0.8,zh-Hant-CN-x-private1-private2;q=1')).to.equal('zh-Hant-CN-x-private1-private2');
+        expect(al.get('en-US;q=0.8,zh-Hant-CN-x-private1;q=1')).to.equal('zh-Hant-CN-x-private1-private2');
+        expect(al.get('en-US;q=0.8,zh-Hant-CN;q=1')).to.equal('zh-Hant-CN-x-private1-private2');
+        expect(al.get('en-US;q=0.8,zh-Hant;q=1')).to.equal('zh-Hant-CN-x-private1-private2');
+        expect(al.get('en-US;q=0.8,zh;q=1')).to.equal('zh-Hant-CN-x-private1-private2');
     });
 });

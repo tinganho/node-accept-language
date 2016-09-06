@@ -25,17 +25,17 @@ declare module 'bcp47' {
         /**
          * ISO 3166-1 code.
          */
-        region: string;
+        region: string | null;
 
         /**
          * ISO 15924 code.
          */
-        script: string;
+        script: string | null;
 
         /**
          * Registered variants.
          */
-        variant: string;
+        variant: string[];
 
         /**
          * Extensions.
