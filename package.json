@@ -2,9 +2,9 @@
   "name": "accept-language",
   "version": "2.0.16",
   "description": "HTTP Accept-Language parser for node",
-  "main": "index.js",
+  "main": "Build/Source/AcceptLanguage.js",
   "scripts": {
-    "test": "./binaries/test"
+    "test": "node node_modules/mocha/bin/mocha Build/Source/Test.js"
   },
   "repository": {
     "type": "git",
@@ -13,7 +13,7 @@
   "keywords": [
     "accept-language",
     "i18n",
-    "parser"
+    "http"
   ],
   "author": "Tingan Ho <tingan87@gmail.com>",
   "license": "MIT",
@@ -23,11 +23,11 @@
   "homepage": "https://github.com/tinganho/node-accept-language",
   "devDependencies": {
     "mocha": "^2.2.5",
-    "chai": "~1.9.1"
+    "chai": "~1.9.1",
+    "@types/chai": "^3.4.32",
+    "@types/mocha": "^2.2.31"
   },
   "dependencies": {
-    "@types/chai": "^3.4.32",
-    "@types/mocha": "^2.2.31",
     "bcp47": "^1.1.2"
   }
 }
