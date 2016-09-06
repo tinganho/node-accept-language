@@ -1,7 +1,7 @@
 {
   "name": "accept-language",
   "version": "3.0.0",
-  "description": "HTTP Accept-Language parser for node",
+  "description": "Accept-Language parser for nodejs",
   "main": "Build/Source/AcceptLanguage.js",
   "scripts": {
     "test": "node node_modules/mocha/bin/mocha Build/Source/Test.js"
