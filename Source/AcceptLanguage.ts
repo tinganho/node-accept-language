@@ -65,16 +65,16 @@ class AcceptLanguage {
             for (const definedLangTag of this.languageTagsWithValues[requestedLangTag.language.language]) {
                 for (const prop of ['privateuse', 'extension', 'variant', 'region', 'script']) {
 
+                    // Continue fast.
+                    if (!(requestedLangTag as any)[prop]) {
+                        continue;
+                    }
+
                     // Filter out more 'narrower' requested languages first. If someone requests 'zh-Hant'
                     // and my defined language is 'zh'. Then I cannot match 'zh-Hant', because 'zh' is
                     // wider than 'zh-Hant'.
                     if ((requestedLangTag as any)[prop] && !(definedLangTag as any)[prop]) {
                         continue middle;
-                    }
-
-                    // Continue fast.
-                    if (!(requestedLangTag as any)[prop] && !(definedLangTag as any)[prop]) {
-                        continue;
                     }
 
                     // Filter out 'narrower' requested languages.
@@ -87,7 +87,7 @@ class AcceptLanguage {
                     }
 
                     // Filter out non-matched properties.
-                    else if ((definedLangTag as any)[prop] !== (requestedLangTag as any)[prop]) {
+                    else if ((requestedLangTag as any)[prop] && (definedLangTag as any)[prop] !== (requestedLangTag as any)[prop]) {
                         continue middle;
                     }
                 }
