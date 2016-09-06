@@ -8,7 +8,7 @@ interface LanguageTagWithValue extends bcp47.LanguageTag {
 class AcceptLanguage {
     private languageTagsWithValues: {
         [index: string]: [LanguageTagWithValue];
-    }
+    } = {};
 
     private defaultLanguageTag: string | null = null;
 
@@ -39,7 +39,6 @@ class AcceptLanguage {
 
         this.defaultLanguageTag = definedLanguages[0];
     }
-
 
     public get(languagePriorityList: string): string | null {
         return this.parse(languagePriorityList)[0];
