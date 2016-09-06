@@ -35,11 +35,15 @@ describe('Language definitions', () => {
     it('should not match narrower requested languages', () => {
         const al = createInstance(['en']);
         expect(al.get('en-US')).to.equal('en');
+        const al2 = createInstance(['zh']);
+        expect(al2.get('zh-Hant')).to.equal('zh');
     });
 
     it('should match wider requested languages', () => {
-        const al = createInstance(['en-US']);
-        expect(al.get('en')).to.equal('en-US');
+        const al1 = createInstance(['en-US']);
+        expect(al1.get('en')).to.equal('en-US');
+        const al2 = createInstance(['zh-Hant']);
+        expect(al2.get('zh')).to.equal('zh-Hant');
     });
 
     it('should match multiple requested languages', () => {
@@ -54,6 +58,36 @@ describe('Language definitions', () => {
 
     it('should match based on quality', () => {
         const al = createInstance(['en-US', 'zh-CN']);
+        expect(al.get('en-US;q=0.8,zh-CN;q=1.0')).to.equal('zh-CN');
+    });
+
+    it('should match on script', () => {
+        const al = createInstance(['en-US', 'zh-Hant']);
+        expect(al.get('zh-Hant;q=1,en-US;q=0.8')).to.equal('zh-Hant');
+    });
+
+    it('should match on region', () => {
+        const al = createInstance(['en-US', 'zh-CN']);
         expect(al.get('en-US;q=0.8, zh-CN;q=1.0')).to.equal('zh-CN');
+    });
+
+    it('should match on variant', () => {
+        const al = createInstance(['en-US', 'de-CH-1996']);
+        expect(al.get('en-US;q=0.8, de-CH-1996;q=1.0')).to.equal('de-CH-1996');
+    });
+
+    it('should match on privateuse', () => {
+        const al = createInstance(['en-US', 'de-CH-x-a']);
+        expect(al.get('en-US;q=0.8, de-CH-x-a;q=1.0')).to.equal('de-CH-x-a');
+    });
+
+    it('should match on extension', () => {
+        const al = createInstance(['zh-CN', 'en-a-bbb']);
+        expect(al.get('en-US;q=0.8, en-a-bbb;q=1.0')).to.equal('en-a-bbb');
+    });
+
+    it('should match on multiple subscript', () => {
+        const al = createInstance(['sv-SE', 'zh-Hant-CN']);
+        expect(al.get('en-US;q=0.8,zh-Hant-CN;q=1')).to.equal('zh-Hant-CN');
     });
 });

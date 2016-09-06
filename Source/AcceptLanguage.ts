@@ -28,7 +28,8 @@ class AcceptLanguage {
                 throw new TypeError('Language tag ' + languageTagString + ' is not supported.');
             }
             const langtag = languageTag.langtag;
-            const languageTagWithValues = Object.assign({ value: languageTagString }, langtag);
+            let languageTagWithValues: LanguageTagWithValue = langtag as LanguageTagWithValue;
+            languageTagWithValues.value = languageTagString;
             if (!this.languageTagsWithValues[language]) {
                 this.languageTagsWithValues[language] = [languageTagWithValues];
             }
@@ -79,7 +80,7 @@ class AcceptLanguage {
                     // Filter out 'narrower' requested languages.
                     if ((requestedLangTag as any)[prop] instanceof Array) {
                         for (let i = 0; i < (requestedLangTag as any)[prop].length; i++) {
-                            if ((requestedLangTag as any)[prop][i] !== (definedLangTag as any)[prop][i]) {
+                            if (!deepEqual((requestedLangTag as any)[prop][i], (definedLangTag as any)[prop][i])) {
                                 continue middle;
                             }
                         }
@@ -119,6 +120,30 @@ class AcceptLanguage {
     }
 }
 
+export function deepEqual(x: any, y: any) {
+    if ((typeof x === 'object' && x !== null) && (typeof y === 'object' && y !== null)) {
+        if (Object.keys(x).length !== Object.keys(y).length) {
+            return false;
+        }
+
+        for (let prop in x) {
+            if (y.hasOwnProperty(prop)) {
+                if (!deepEqual(x[prop], y[prop])) {
+                    return false;
+                }
+            }
+            else {
+                return false;
+            }
+        }
+        return true;
+    }
+    else if (x !== y) {
+        return false;
+    }
+    return true;
+}
+
 export function create() {
     const al = new AcceptLanguage();
     al.create = function() {
@@ -131,3 +156,4 @@ export default create();
 
 declare var exports: any;
 exports = create();
+
