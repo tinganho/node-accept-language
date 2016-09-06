@@ -4,7 +4,7 @@
   "description": "Accept-Language parser for nodejs",
   "main": "Build/Source/AcceptLanguage.js",
   "scripts": {
-    "test": "node node_modules/mocha/bin/mocha Build/Source/Test.js"
+    "test": "node node_modules/mocha/bin/mocha Build/Tests/Test.js"
   },
   "repository": {
     "type": "git",
