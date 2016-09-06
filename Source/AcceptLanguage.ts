@@ -120,7 +120,7 @@ class AcceptLanguage {
     }
 }
 
-export function deepEqual(x: any, y: any) {
+function deepEqual(x: any, y: any) {
     if ((typeof x === 'object' && x !== null) && (typeof y === 'object' && y !== null)) {
         if (Object.keys(x).length !== Object.keys(y).length) {
             return false;
