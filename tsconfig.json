@@ -1,0 +1,9 @@
+{
+    "compilerOptions": {
+        "noImplicitAny": true,
+        "target": "es6",
+        "outDir": "Build",
+        "module": "commonjs",
+        "strictNullChecks": true
+    }
+}
