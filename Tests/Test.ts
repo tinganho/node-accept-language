@@ -1,7 +1,4 @@
 
-/// <reference path='../node_modules/@types/mocha/index.d.ts'/>
-/// <reference path='../node_modules/@types/chai/index.d.ts'/>
-
 import AcceptLanguage from '../Source/AcceptLanguage';
 import chai = require('chai');
 const expect = chai.expect;
