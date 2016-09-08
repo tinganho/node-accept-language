@@ -150,7 +150,7 @@ function deepEqual(x: any, y: any) {
     return true;
 }
 
-export function create() {
+function create() {
     const al = new AcceptLanguage();
     al.create = function() {
         return new AcceptLanguage();
@@ -158,7 +158,8 @@ export function create() {
     return al;
 }
 
-export default create();
-
 declare var module: any;
 module.exports = create();
+module.exports.default = create();
+
+export default create();
