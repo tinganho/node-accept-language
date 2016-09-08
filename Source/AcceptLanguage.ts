@@ -154,5 +154,5 @@ export function create() {
 
 export default create();
 
-declare var exports: any;
-exports = create();
+declare var module: any;
+module.exports = create();
