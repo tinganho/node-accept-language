@@ -109,6 +109,12 @@ class AcceptLanguage {
 
             // Filter non-defined language tags
             .filter((languageTag) => {
+                if (!languageTag) {
+                    return false;
+                }
+                if (!languageTag.tag) {
+                    return false;
+                }
                 return languageTag;
             })
 
