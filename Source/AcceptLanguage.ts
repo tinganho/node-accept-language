@@ -41,7 +41,7 @@ class AcceptLanguage {
         this.defaultLanguageTag = definedLanguages[0];
     }
 
-    public get(languagePriorityList: string): string | null {
+    public get(languagePriorityList: string | null | undefined): string | null {
         return this.parse(languagePriorityList)[0];
     }
 
@@ -49,7 +49,7 @@ class AcceptLanguage {
         return null as any;
     }
 
-    private parse(languagePriorityList: string) {
+    private parse(languagePriorityList: string | null | undefined): (string | null)[] {
         if (!languagePriorityList) {
             return [this.defaultLanguageTag];
         }

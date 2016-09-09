@@ -10,7 +10,7 @@ declare module 'accept-language' {
         /**
          * Get matched languages. If no match, the default language will be returned.
          */
-        public get(priorityList: string): string;
+        public get(priorityList: string | null | undefined): string | null;
     }
 
     interface AcceptLanguageModule extends AcceptLanguage {

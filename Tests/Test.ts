@@ -99,8 +99,8 @@ describe('Language definitions', () => {
 
     it('should return default language on falsy get', () => {
         const al = createInstance(['sv-SE', 'zh-Hant-CN-x-red']);
-        expect(al.get(undefined as any)).to.equal('sv-SE');
-        expect(al.get(null as any)).to.equal('sv-SE');
-        expect(al.get('' as any)).to.equal('sv-SE');
+        expect(al.get(undefined)).to.equal('sv-SE');
+        expect(al.get(null)).to.equal('sv-SE');
+        expect(al.get('')).to.equal('sv-SE');
     });
 });
