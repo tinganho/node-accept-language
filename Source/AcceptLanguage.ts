@@ -50,6 +50,10 @@ class AcceptLanguage {
     }
 
     private parse(languagePriorityList: string) {
+        if (!languagePriorityList) {
+            return [this.defaultLanguageTag];
+        }
+
         const parsedAndSortedLanguageTags = parseAndSortLanguageTags(languagePriorityList);
 
         const result: string[] = [];

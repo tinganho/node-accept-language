@@ -96,4 +96,11 @@ describe('Language definitions', () => {
         expect(al.get('en-US;q=0.8,zh-Hant;q=1')).to.equal('zh-Hant-CN-x-private1-private2');
         expect(al.get('en-US;q=0.8,zh;q=1')).to.equal('zh-Hant-CN-x-private1-private2');
     });
+
+    it('should return default language on falsy get', () => {
+        const al = createInstance(['sv-SE', 'zh-Hant-CN-x-red']);
+        expect(al.get(undefined as any)).to.equal('sv-SE');
+        expect(al.get(null as any)).to.equal('sv-SE');
+        expect(al.get('' as any)).to.equal('sv-SE');
+    });
 });
