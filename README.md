@@ -23,8 +23,9 @@ console.log(acceptLanguage.get('en-GB,en;q=0.8,sv'));
 
 */
 ```
-### Recommended usage with L10ns:
-[L10ns][] is an internationalization workflow and formatting tool. This library was specifically built for L10ns. L10ns is a very good alternative to Gettext and all of it's tooling support–XGettext, PoEdit, custom libraries etc.
+
+### Usage with Express:
+If you are using Express server please use the middleware [express-request-language](https://www.npmjs.com/package/express-request-language).
 
 ### API
 #### acceptLanguage.languages(Array languageTags);
