@@ -13,12 +13,12 @@ declare module 'accept-language' {
         public get(priorityList: string | null | undefined): string | null;
     }
 
-    interface AcceptLanguageModule extends AcceptLanguage {
+    class AcceptLanguageModule extends AcceptLanguage {
         /**
          * Create instance of parser
          */
-        create(): AcceptLanguage;
+        public create(): AcceptLanguage;
     }
 
-    export = AcceptLanguageModule;
+    export = new AcceptLanguageModule();
 }
