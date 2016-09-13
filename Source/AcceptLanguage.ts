@@ -59,7 +59,13 @@ class AcceptLanguage {
         const result: string[] = [];
 
         for (const languageTag of parsedAndSortedLanguageTags) {
-            const requestedLangTag = bcp47.parse(languageTag.tag).langtag;
+            const requestedLang = bcp47.parse(languageTag.tag);
+
+            if (!requestedLang) {
+                continue;
+            }
+
+            const requestedLangTag = requestedLang.langtag;
 
             if (!this.languageTagsWithValues[requestedLangTag.language.language]) {
                 continue;
