@@ -29,6 +29,7 @@
     "@types/mocha": "^2.2.31"
   },
   "dependencies": {
-    "bcp47": "^1.1.2"
+    "bcp47": "^1.1.2",
+    "stable": "^0.1.6"
   }
 }

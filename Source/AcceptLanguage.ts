@@ -1,5 +1,6 @@
 
 import bcp47 = require('bcp47');
+import stable = require('stable');
 
 interface LanguageTagWithValue extends bcp47.LanguageTag {
     value: string;
@@ -109,7 +110,7 @@ class AcceptLanguage {
         return result.length > 0 ? result : [this.defaultLanguageTag];
 
         function parseAndSortLanguageTags(languagePriorityList: string) {
-            return languagePriorityList.split(',').map((weightedLanguageRange) => {
+            return stable(languagePriorityList.split(',').map((weightedLanguageRange) => {
                 const components = weightedLanguageRange.replace(/\s+/, '').split(';');
                 return {
                     tag: components[0],
@@ -129,7 +130,7 @@ class AcceptLanguage {
             })
 
             // Sort by quality
-            .sort((a, b) => {
+            , (a, b) => {
                 return b.quality - a.quality;
             });
         }
