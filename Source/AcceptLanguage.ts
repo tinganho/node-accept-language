@@ -72,6 +72,7 @@ class AcceptLanguage {
                 continue;
             }
 
+            let closestMatch: string = '', closestScore: number = 0, foundMatch: boolean = false;
             middle:
             for (const definedLangTag of this.languageTagsWithValues[requestedLangTag.language.language]) {
                 for (const prop of ['privateuse', 'extension', 'variant', 'region', 'script']) {
@@ -85,6 +86,11 @@ class AcceptLanguage {
                     // and my defined language is 'zh'. Then I cannot match 'zh-Hant', because 'zh' is
                     // wider than 'zh-Hant'.
                     if ((requestedLangTag as any)[prop] && !(definedLangTag as any)[prop]) {
+                        const score = scoreLanguageSimilarity(requestedLangTag, definedLangTag);
+                        if (score > closestScore) {
+                            closestMatch = definedLangTag.value;
+                            closestScore = score;
+                        }
                         continue middle;
                     }
 
@@ -92,6 +98,11 @@ class AcceptLanguage {
                     if ((requestedLangTag as any)[prop] instanceof Array) {
                         for (let i = 0; i < (requestedLangTag as any)[prop].length; i++) {
                             if (!deepEqual((requestedLangTag as any)[prop][i], (definedLangTag as any)[prop][i])) {
+                                const score = scoreLanguageSimilarity(requestedLangTag, definedLangTag);
+                                if (score > closestScore) {
+                                    closestMatch = definedLangTag.value;
+                                    closestScore = score;
+                                }
                                 continue middle;
                             }
                         }
@@ -102,12 +113,29 @@ class AcceptLanguage {
                         continue middle;
                     }
                 }
-
+                foundMatch = true;
                 result.push(definedLangTag.value);
+            }
+            if (!foundMatch) {
+                result.push(closestMatch);
             }
         }
 
         return result.length > 0 ? result : [this.defaultLanguageTag];
+
+        function scoreLanguageSimilarity(languageA: any, languageB: any) {
+            let score = 0;
+            if (languageA.script === languageB.script) score += 2;
+            if (languageA.region=== languageB.region) score += 1;
+            if (languageA.variant.length === languageB.variant.length) {
+                let matchFail = false;
+                for (let i = 0; i < languageA.variant.length; i += 1) {
+                    matchFail = matchFail || languageA[i] !== languageB[i];
+                }
+                if (!matchFail) score += 1;
+            }
+            return score;
+        }
 
         function parseAndSortLanguageTags(languagePriorityList: string) {
             return stable(languagePriorityList.split(',').map((weightedLanguageRange) => {
