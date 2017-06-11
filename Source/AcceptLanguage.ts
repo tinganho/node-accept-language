@@ -54,11 +54,8 @@ class AcceptLanguage {
         if (!languagePriorityList) {
             return [this.defaultLanguageTag];
         }
-
         const parsedAndSortedLanguageTags = parseAndSortLanguageTags(languagePriorityList);
-
         const result: string[] = [];
-
         for (const languageTag of parsedAndSortedLanguageTags) {
             const requestedLang = bcp47.parse(languageTag.tag);
 
@@ -77,28 +74,41 @@ class AcceptLanguage {
                 for (const prop of ['privateuse', 'extension', 'variant', 'region', 'script']) {
 
                     // Continue fast.
-                    if (!(requestedLangTag as any)[prop]) {
+                    const definedLanguagePropertValue = (definedLangTag as any)[prop];
+                    if (!definedLanguagePropertValue) {
                         continue;
                     }
 
-                    // Filter out more 'narrower' requested languages first. If someone requests 'zh-Hant'
-                    // and my defined language is 'zh'. Then I cannot match 'zh-Hant', because 'zh' is
-                    // wider than 'zh-Hant'.
-                    if ((requestedLangTag as any)[prop] && !(definedLangTag as any)[prop]) {
+                    // Filter out wider requested languages first. If someone requests 'zh'
+                    // and my defined language is 'zh-Hant'. I cannot match 'zh-Hant', because
+                    // 'zh' is wider than 'zh-Hant'.
+                    const requestedLanguagePropertyValue = (requestedLangTag as any)[prop];
+                    if (definedLanguagePropertValue && !requestedLanguagePropertyValue) {
                         continue middle;
                     }
-
-                    // Filter out 'narrower' requested languages.
-                    if ((requestedLangTag as any)[prop] instanceof Array) {
-                        for (let i = 0; i < (requestedLangTag as any)[prop].length; i++) {
-                            if (!deepEqual((requestedLangTag as any)[prop][i], (definedLangTag as any)[prop][i])) {
+                    else if (prop === 'privateuse' || prop === 'variant') {
+                        for (let i = 0; i < definedLanguagePropertValue.length; i++) {
+                            if (definedLanguagePropertValue[i] !== requestedLanguagePropertyValue[i]) {
                                 continue middle;
+                            }
+                        }
+                    }
+                    else if (prop === 'extension') {
+                        for (let i = 0; i < definedLanguagePropertValue.length; i++) {
+                            const extensions = definedLanguagePropertValue[i].extension;
+                            for (let ei = 0; ei < extensions.length; ei++) {
+                                if (!requestedLanguagePropertyValue[i]) {
+                                    continue middle;
+                                }
+                                if (extensions[ei] !== requestedLanguagePropertyValue[i].extension[ei]) {
+                                    continue middle;
+                                }
                             }
                         }
                     }
 
                     // Filter out non-matched properties.
-                    else if ((requestedLangTag as any)[prop] && (definedLangTag as any)[prop] !== (requestedLangTag as any)[prop]) {
+                    else if (definedLanguagePropertValue !== requestedLanguagePropertyValue) {
                         continue middle;
                     }
                 }
@@ -135,30 +145,6 @@ class AcceptLanguage {
             });
         }
     }
-}
-
-function deepEqual(x: any, y: any) {
-    if ((typeof x === 'object' && x !== null) && (typeof y === 'object' && y !== null)) {
-        if (Object.keys(x).length !== Object.keys(y).length) {
-            return false;
-        }
-
-        for (let prop in x) {
-            if (y.hasOwnProperty(prop)) {
-                if (!deepEqual(x[prop], y[prop])) {
-                    return false;
-                }
-            }
-            else {
-                return false;
-            }
-        }
-        return true;
-    }
-    else if (x !== y) {
-        return false;
-    }
-    return true;
 }
 
 function create() {

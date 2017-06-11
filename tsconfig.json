@@ -1,9 +1,11 @@
 {
     "compilerOptions": {
-        "noImplicitAny": true,
         "target": "es5",
         "outDir": "Build",
         "module": "commonjs",
-        "strictNullChecks": true
+        "sourceMap": false,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "strict": true
     }
 }
