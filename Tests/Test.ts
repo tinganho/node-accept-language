@@ -54,6 +54,8 @@ describe('Language definitions', () => {
     it('match / specificity: should match based on specificity', () => {
         const al = createInstance(['en', 'en-US']);
         expect(al.get('en-US')).to.equal('en-US');
+        const al2 = createInstance(['en', 'en-US']);
+        expect(al2.get('en, en-US')).to.equal('en');
     });
 
     it('script / perfect match', () => {
