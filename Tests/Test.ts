@@ -1,4 +1,6 @@
 
+require('source-map-support').install();
+
 import AcceptLanguage from '../Source/AcceptLanguage';
 import chai = require('chai');
 const expect = chai.expect;
@@ -15,7 +17,7 @@ describe('Language definitions', () => {
     it('should throw when defined languages is empty', () => {
         const method = () => {
             createInstance([]);
-        }
+        };
         expect(method).to.throw();
     });
 
@@ -24,34 +26,39 @@ describe('Language definitions', () => {
         expect(al.get('sv')).to.equal(null);
     });
 
-    it('should return default language when no match', () => {
+    it('match / no-match: should return default language when no match', () => {
         const al = createInstance(['en']);
         expect(al.get('sv')).to.equal('en');
     });
 
-    it('should match multiple requested languages', () => {
+    it('match / case-insensitive: language matching should be case-insensitive', () => {
+        const al = createInstance(['fr-FR', 'de-DE']);
+        expect(al.get('de-de')).to.equal('de-DE');
+    });
+
+    it('match / mutliple-language-requests: should match multiple requested languages', () => {
         const al = createInstance(['en-US']);
         expect(al.get('en-US,sv-SE')).to.equal('en-US');
     });
 
-    it('should match multiple defined languages', () => {
+    it('match / mutliple-defined-languages: should match multiple defined languages', () => {
         const al = createInstance(['en-US', 'sv-SE']);
         expect(al.get('en-US,sv-SE')).to.equal('en-US');
     });
 
-    it('quality', () => {
+    it('match / quality: should match based on quality score', () => {
         const al = createInstance(['en-US', 'zh-CN']);
         expect(al.get('en-US;q=0.8,zh-CN;q=1.0')).to.equal('zh-CN');
+    });
+
+    it('match / specificity: should match based on specificity', () => {
+        const al = createInstance(['en', 'en-US']);
+        expect(al.get('en-US')).to.equal('en-US');
     });
 
     it('script / perfect match', () => {
         const al = createInstance(['en-US', 'zh-Hant']);
         expect(al.get('zh-Hant;q=1,en-US;q=0.8')).to.equal('zh-Hant');
-    });
-
-    it('script / false match', () => {
-        const al = createInstance(['en-US', 'zh-Hant']);
-        expect(al.get('zh-Hans;q=1,en-US;q=0.8')).to.equal('en-US');
     });
 
     it('script / false match', () => {
@@ -154,11 +161,6 @@ describe('Language definitions', () => {
         expect(al.get('en-US;q=0.8,zh-Hant-CN-x-red;q=1')).to.equal('zh-Hant-CN-x-red');
     });
 
-    it('multiple subscripts / perfect match', () => {
-        const al = createInstance(['sv-SE', 'zh-Hant-CN-x-red']);
-        expect(al.get('en-US;q=0.8,zh-Hant-CN-x-red;q=1')).to.equal('zh-Hant-CN-x-red');
-    });
-
     it('multiple subscripts / broader match', () => {
         const al = createInstance(['sv-SE', 'zh-Hant-CN-x-red']);
         expect(al.get('en-US;q=0.8,zh-Hant-CN-x-red-blue;q=1')).to.equal('zh-Hant-CN-x-red');
@@ -169,7 +171,7 @@ describe('Language definitions', () => {
         expect(al.get('en-US;q=0.8,zh-Hant-CN-x-red;q=1')).to.equal('sv-SE');
     });
 
-    it('multiple subscripts / false match', () => {
+    it('multiple subscripts / no match', () => {
         const al = createInstance(['sv-SE', 'zh-Hant-CN-x-red']);
         expect(al.get('en-US;q=0.8,zh-Hans-CN-x-red;q=1')).to.equal('sv-SE');
     });

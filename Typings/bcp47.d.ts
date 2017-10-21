@@ -2,7 +2,7 @@
 declare module 'bcp47' {
     interface Extension {
         singleton: string;
-        extensions: string[];
+        extension: string[];
     }
 
     interface Language {

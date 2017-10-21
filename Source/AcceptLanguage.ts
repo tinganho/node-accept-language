@@ -6,9 +6,15 @@ interface LanguageTagWithValue extends bcp47.LanguageTag {
     value: string;
 }
 
+interface LanguageScore {
+    unmatchedRequestedSubTag: number;
+    quality: number;
+    languageTag: string;
+}
+
 class AcceptLanguage {
     private languageTagsWithValues: {
-        [index: string]: [LanguageTagWithValue];
+        [language: string]: [LanguageTagWithValue];
     } = {};
 
     private defaultLanguageTag: string | null = null;
@@ -31,11 +37,28 @@ class AcceptLanguage {
             const langtag = languageTag.langtag;
             let languageTagWithValues: LanguageTagWithValue = langtag as LanguageTagWithValue;
             languageTagWithValues.value = languageTagString;
+            const lowerCasedLanguageTagWithValues: LanguageTagWithValue = {
+                language: {
+                    language: langtag.language.language.toLowerCase(),
+                    extlang: langtag.language.extlang.map((e) => e.toLowerCase()),
+                },
+                region: langtag.region && langtag.region.toLowerCase(),
+                script: langtag.script && langtag.script.toLowerCase(),
+                variant: langtag.variant.map((v) => v.toLowerCase()),
+                privateuse: langtag.privateuse.map((p) => p.toLowerCase()),
+                extension: langtag.extension.map((e) => {
+                    return {
+                        extension: e.extension && e.extension.map((e) => e.toLowerCase()),
+                        singleton: e.singleton.toLowerCase(),
+                    }
+                }),
+                value: languageTagString,
+            };
             if (!this.languageTagsWithValues[language]) {
-                this.languageTagsWithValues[language] = [languageTagWithValues];
+                this.languageTagsWithValues[language] = [lowerCasedLanguageTagWithValues];
             }
             else {
-                this.languageTagsWithValues[language].push(languageTagWithValues);
+                this.languageTagsWithValues[language].push(lowerCasedLanguageTagWithValues);
             }
         });
 
@@ -55,7 +78,7 @@ class AcceptLanguage {
             return [this.defaultLanguageTag];
         }
         const parsedAndSortedLanguageTags = parseAndSortLanguageTags(languagePriorityList);
-        const result: string[] = [];
+        const result: LanguageScore[] = [];
         for (const languageTag of parsedAndSortedLanguageTags) {
             const requestedLang = bcp47.parse(languageTag.tag);
 
@@ -71,11 +94,34 @@ class AcceptLanguage {
 
             middle:
             for (const definedLangTag of this.languageTagsWithValues[requestedLangTag.language.language]) {
+                let unmatchedRequestedSubTag = 0;
                 for (const prop of ['privateuse', 'extension', 'variant', 'region', 'script']) {
-
-                    // Continue fast.
                     const definedLanguagePropertValue = (definedLangTag as any)[prop];
                     if (!definedLanguagePropertValue) {
+                        const requestedLanguagePropertyValue = (requestedLangTag as any)[prop];
+                        if (requestedLanguagePropertyValue) {
+                            unmatchedRequestedSubTag++;
+                        }
+                        switch (prop) {
+                            case 'privateuse':
+                            case 'variant':
+                                for (let i = 0; i < requestedLanguagePropertyValue.length; i++) {
+                                    if (requestedLanguagePropertyValue[i]) {
+                                        unmatchedRequestedSubTag++;
+                                    }
+                                }
+                                break;
+                            case 'extension':
+                                for (let i = 0; i < requestedLanguagePropertyValue.length; i++) {
+                                    const extension = requestedLanguagePropertyValue[i].extension;
+                                    for (let ei = 0; ei < extension.length; ei++) {
+                                        if (!requestedLanguagePropertyValue[i].extension[ei]) {
+                                            unmatchedRequestedSubTag++;
+                                        }
+                                    }
+                                }
+                                break;
+                        }
                         continue;
                     }
 
@@ -83,44 +129,61 @@ class AcceptLanguage {
                     // and my defined language is 'zh-Hant'. I cannot match 'zh-Hant', because
                     // 'zh' is wider than 'zh-Hant'.
                     const requestedLanguagePropertyValue = (requestedLangTag as any)[prop];
-                    if (definedLanguagePropertValue && !requestedLanguagePropertyValue) {
+                    if (!requestedLanguagePropertyValue) {
                         continue middle;
-                    }
-                    else if (prop === 'privateuse' || prop === 'variant') {
-                        for (let i = 0; i < definedLanguagePropertValue.length; i++) {
-                            if (definedLanguagePropertValue[i] !== requestedLanguagePropertyValue[i]) {
-                                continue middle;
-                            }
-                        }
-                    }
-                    else if (prop === 'extension') {
-                        for (let i = 0; i < definedLanguagePropertValue.length; i++) {
-                            const extensions = definedLanguagePropertValue[i].extension;
-                            for (let ei = 0; ei < extensions.length; ei++) {
-                                if (!requestedLanguagePropertyValue[i]) {
-                                    continue middle;
-                                }
-                                if (extensions[ei] !== requestedLanguagePropertyValue[i].extension[ei]) {
-                                    continue middle;
-                                }
-                            }
-                        }
                     }
 
-                    // Filter out non-matched properties.
-                    else if (definedLanguagePropertValue !== requestedLanguagePropertyValue) {
-                        continue middle;
+
+                    switch (prop) {
+                        case 'privateuse':
+                        case 'variant':
+                            for (let i = 0; i < definedLanguagePropertValue.length; i++) {
+                                if (!requestedLanguagePropertyValue[i] || definedLanguagePropertValue[i] !== requestedLanguagePropertyValue[i].toLowerCase()) {
+                                    continue middle;
+                                }
+                            }
+                            break;
+                        case 'extension':
+                            for (let i = 0; i < definedLanguagePropertValue.length; i++) {
+                                const extension = definedLanguagePropertValue[i].extension;
+                                for (let ei = 0; ei < extension.length; ei++) {
+                                    if (!requestedLanguagePropertyValue[i]) {
+                                        continue middle;
+                                    }
+                                    if (!requestedLanguagePropertyValue[i].extension[ei]) {
+                                        continue middle;
+                                    }
+                                    if (extension[ei] !== requestedLanguagePropertyValue[i].extension[ei].toLowerCase()) {
+                                        continue middle;
+                                    }
+                                }
+                            }
+                            break;
+                        default:
+                            if (definedLanguagePropertValue !== requestedLanguagePropertyValue.toLowerCase()) {
+                                continue middle;
+                            }
                     }
                 }
 
-                result.push(definedLangTag.value);
+                result.push({
+                    unmatchedRequestedSubTag,
+                    quality: languageTag.quality,
+                    languageTag: definedLangTag.value
+                });
             }
         }
 
-        return result.length > 0 ? result : [this.defaultLanguageTag];
+        return result.length > 0 ? stable(result, (a, b) => {
+            const quality = b.quality - a.quality;
+            if (quality != 0) {
+                return quality;
+            }
+            return a.unmatchedRequestedSubTag - b.unmatchedRequestedSubTag;
+        }).map((l) => l.languageTag) : [this.defaultLanguageTag];
 
         function parseAndSortLanguageTags(languagePriorityList: string) {
-            return stable(languagePriorityList.split(',').map((weightedLanguageRange) => {
+            return languagePriorityList.split(',').map((weightedLanguageRange) => {
                 const components = weightedLanguageRange.replace(/\s+/, '').split(';');
                 return {
                     tag: components[0],
@@ -137,11 +200,6 @@ class AcceptLanguage {
                     return false;
                 }
                 return languageTag;
-            })
-
-            // Sort by quality
-            , (a, b) => {
-                return b.quality - a.quality;
             });
         }
     }
