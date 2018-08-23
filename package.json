@@ -4,6 +4,7 @@
   "description": "Accept-Language parser for nodejs",
   "main": "Build/Source/AcceptLanguage.js",
   "scripts": {
+    "build": "tsc",
     "test": "node node_modules/mocha/bin/mocha Build/Tests/Test.js"
   },
   "types": "Library/Typings.d.ts",
