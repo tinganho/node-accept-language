@@ -1,6 +1,5 @@
 
 import bcp47 = require('bcp47');
-import stable = require('stable');
 
 interface LanguageTagWithValue extends bcp47.LanguageTag {
     value: string;
@@ -174,7 +173,7 @@ class AcceptLanguage {
             }
         }
 
-        return result.length > 0 ? stable(result, (a, b) => {
+        return result.length > 0 ? result.sort((a, b) => {
             const quality = b.quality - a.quality;
             if (quality != 0) {
                 return quality;
