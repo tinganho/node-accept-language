@@ -1,6 +1,6 @@
 {
   "name": "accept-language",
-  "version": "3.0.19",
+  "version": "3.0.20",
   "description": "Accept-Language parser for nodejs",
   "main": "Build/Source/AcceptLanguage.js",
   "scripts": {
