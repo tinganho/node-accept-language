@@ -31,7 +31,6 @@
     "source-map-support": "^0.4.18"
   },
   "dependencies": {
-    "bcp47": "^1.1.2",
-    "stable": "^0.1.6"
+    "bcp47": "^1.1.2"
   }
 }
