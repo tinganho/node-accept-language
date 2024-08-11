@@ -20,18 +20,18 @@ class AcceptLanguage {
 
     public languages(definedLanguages: string[]) {
         if (definedLanguages.length < 1) {
-            throw new Error('The number of defined languages cannot be smaller than one.');
+            throw new Error('No language tags defined. Provide at least 1 language tag to match.');
         }
 
         this.languageTagsWithValues = {};
         definedLanguages.forEach((languageTagString) => {
             const languageTag = bcp47.parse(languageTagString);
             if (!languageTag) {
-                throw new TypeError('Language tag ' + languageTagString + ' is not bcp47 compliant. For more info https://tools.ietf.org/html/bcp47.');
+                throw new TypeError(`'${ languageTagString }' is not bcp47 compliant. More about bcp47 https://tools.ietf.org/html/bcp47.`);
             }
             const language = languageTag.langtag.language.language;
             if (!language) {
-                throw new TypeError('Language tag ' + languageTagString + ' is not supported.');
+                throw new TypeError(`${ languageTagString } is not supported.`);
             }
             const langtag = languageTag.langtag;
             let languageTagWithValues: LanguageTagWithValue = langtag as LanguageTagWithValue;
