@@ -18,7 +18,7 @@ class AcceptLanguage {
 
     private defaultLanguageTag: string | null = null;
 
-    public languages(definedLanguages: string[]) {
+    public languages(definedLanguages: readonly [string, ...string[]]) {
         if (definedLanguages.length < 1) {
             throw new Error('No language tags defined. Provide at least 1 language tag to match.');
         }

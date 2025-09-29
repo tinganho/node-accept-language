@@ -5,7 +5,7 @@ import AcceptLanguage from '../Source/AcceptLanguage';
 import chai = require('chai');
 const expect = chai.expect;
 
-function createInstance(definedLanguages?: string[]) {
+function createInstance(definedLanguages?: readonly [string, ...string[]]) {
     const al = AcceptLanguage.create();
     if (definedLanguages) {
         al.languages(definedLanguages);
@@ -16,7 +16,7 @@ function createInstance(definedLanguages?: string[]) {
 describe('Language definitions', () => {
     it('should throw when defined languages is empty', () => {
         const method = () => {
-            createInstance([]);
+            createInstance([] as any);
         };
         expect(method).to.throw();
     });
